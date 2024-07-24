@@ -10,3 +10,8 @@
 <h2 id="description">📙 Description</h2>
 
 This **component** is responsible for managing contracts, specifically for radio. The API provides endpoints for registering business companies with their legal data, as well as for registering contracts. The association rule is N:1 from company to contract.
+
+<h2 id="features">✨ Features</h2>
+
+- **Business Company Registration**: Endpoints to add and manage clients' companies.
+- **Contract Registration**: Endpoints to add and manage contracts associated with these companies.
