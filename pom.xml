@@ -68,6 +68,13 @@
             <version>2.6.0</version>
         </dependency>
 
+        <!-- Jakarta Validation  -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
