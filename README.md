@@ -15,3 +15,12 @@ This **component** is responsible for managing contracts, specifically for radio
 
 - **Business Company Registration**: Endpoints to add and manage clients' companies.
 - **Contract Registration**: Endpoints to add and manage contracts associated with these companies.
+
+<h2 id="author">👨🏻‍💻 Author</h2>
+
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/lucasrznd"><img src="https://avatars.githubusercontent.com/u/101664450?v=4&v=" width="115px;" alt="Lucas Rezende"/><br /><sub><b>Lucas Rezende</b></sub></a><br/><a title="Código">💻</a></td>
+  </tbody>
+</table>
