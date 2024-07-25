@@ -1,10 +1,6 @@
 package br.com.lucasrznd.contractmanagementapi.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,9 +19,17 @@ public class ClientCompany {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String businessName;
+
+    @Column(unique = true)
     private String tradeName;
+
+    @Column(unique = true)
     private String registrationNumber;
+
+    @Column(unique = true)
     private String stateRegistration;
     private String phoneNumber;
     private String email;
