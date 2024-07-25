@@ -9,12 +9,12 @@ import lombok.With;
 
 @With
 public record UpdateCompanyRequest(
-        @Schema(description = "Business name", example = "Magazine Luiza")
+        @Schema(description = "Business name", example = "Magazine Luiza Sa")
         @NotBlank(message = "Business name cannot be empty")
         @Size(min = 5, max = 30, message = "Business name must contain between 5 and 30 characters")
         String businessName,
 
-        @Schema(description = "Trade name", example = "Magazine Luiza Sa")
+        @Schema(description = "Trade name", example = "Magazine Luiza")
         @NotBlank(message = "Trade name cannot be empty")
         @Size(min = 10, max = 50, message = "Trade name must contain between 10 and 50 characters")
         String tradeName,
@@ -25,7 +25,6 @@ public record UpdateCompanyRequest(
         String registrationNumber,
 
         @Schema(description = "State registration", example = "120000385")
-        @NotBlank(message = "State registration cannot be empty")
         @Size(min = 8, max = 15, message = "State registration must contain between 8 and 15 characters")
         String stateRegistration,
 
