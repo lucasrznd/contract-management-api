@@ -17,7 +17,7 @@ public record CompanyRequest(
         @Size(min = 10, max = 50, message = "Trade name must contain between 10 and 50 characters")
         String tradeName,
 
-        @Schema(description = "Registration number", example = "00000000000100 || 00.000.000/0001-00")
+        @Schema(description = "Registration number", example = "00000000000100")
         @NotBlank(message = "Registration number cannot be empty")
         @Size(min = 14, max = 17, message = "Registration number must contain between 14 and 17 characters")
         String registrationNumber,
@@ -26,7 +26,7 @@ public record CompanyRequest(
         @Size(min = 8, max = 15, message = "State registration must contain between 8 and 15 characters")
         String stateRegistration,
 
-        @Schema(description = "Phone number", example = "43988888888 || (43) 9 8888-8888")
+        @Schema(description = "Phone number", example = "43988888888")
         @NotBlank(message = "Phone number cannot be empty")
         @Size(min = 10, max = 14, message = "Phone number must contain between 10 and 14 characters")
         String phoneNumber,
@@ -49,7 +49,6 @@ public record CompanyRequest(
 
         @Schema(description = "Address number", example = "1212")
         @NotNull(message = "Address number cannot be empty")
-        @Size(min = 1, max = 10, message = "Address number must contain between 1 and 10 characters")
         Integer number,
 
         @Schema(description = "State", example = "Parana")
