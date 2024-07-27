@@ -89,6 +89,14 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Library for generation of random data for tests -->
+        <dependency>
+            <groupId>uk.co.jemos.podam</groupId>
+            <artifactId>podam</artifactId>
+            <version>7.2.6.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Spring Starter Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
