@@ -1,5 +1,6 @@
 package br.com.lucasrznd.contractmanagementapi.controllers.impl;
 
+import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.ResourceNotFoundException;
 import br.com.lucasrznd.contractmanagementapi.services.CompanyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -9,10 +10,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static br.com.lucasrznd.contractmanagementapi.utils.CompanyConstants.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,6 +44,25 @@ class CompanyControllerImplTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value(BAD_REQUEST.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()));
+    }
+
+    @Test
+    public void updateCompany_WithExistingId_ReturnsOk() throws Exception {
+        when(service.update(1L, UPDATE_COMPANY_REQUEST)).thenReturn(COMPANY_RESPONSE);
+
+        mockMvc.perform(put("/companies/" + 1).contentType(APPLICATION_JSON).content(toJson(UPDATE_COMPANY_REQUEST)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.businessName").value(COMPANY_RESPONSE.businessName()));
+    }
+
+    @Test
+    public void updateCompany_WithUnexistingId_ReturnsNotFound() throws Exception {
+        doThrow(ResourceNotFoundException.class).when(service).update(1L, UPDATE_COMPANY_REQUEST);
+
+        mockMvc.perform(put("/companies/" + 1).contentType(APPLICATION_JSON).content(toJson(UPDATE_COMPANY_REQUEST)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value(NOT_FOUND.getReasonPhrase()))
+                .andExpect(jsonPath("$.status").value(NOT_FOUND.value()));
     }
 
     private String toJson(final Object object) throws Exception {
