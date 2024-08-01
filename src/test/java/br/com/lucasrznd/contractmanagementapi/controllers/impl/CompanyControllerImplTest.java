@@ -9,14 +9,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static br.com.lucasrznd.contractmanagementapi.utils.CompanyConstants.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,6 +65,15 @@ class CompanyControllerImplTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value(NOT_FOUND.getReasonPhrase()))
                 .andExpect(jsonPath("$.status").value(NOT_FOUND.value()));
+    }
+
+    @Test
+    public void listCompanies_ReturnsCompanies() throws Exception {
+        when(service.findAll()).thenReturn(List.of(COMPANY_RESPONSE));
+
+        mockMvc.perform(get("/companies"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     private String toJson(final Object object) throws Exception {
