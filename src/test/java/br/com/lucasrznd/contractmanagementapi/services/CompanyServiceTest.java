@@ -1,5 +1,6 @@
 package br.com.lucasrznd.contractmanagementapi.services;
 
+import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.ResourceNotFoundException;
 import br.com.lucasrznd.contractmanagementapi.dtos.request.CompanyRequest;
 import br.com.lucasrznd.contractmanagementapi.entities.ClientCompany;
 import br.com.lucasrznd.contractmanagementapi.mappers.CompanyMapper;
@@ -144,6 +145,27 @@ class CompanyServiceTest {
         assertThatThrownBy(() -> service.save(request)).isInstanceOf(DataIntegrityViolationException.class);
         verify(repository, times(0)).save(any());
         verify(mapper, times(0)).toResponse(any());
+    }
+
+    @Test
+    public void updateCompany_WithExistingId_ReturnsUpdatedCompany() {
+        when(repository.findById(1L)).thenReturn(Optional.of(COMPANY_ENTITY));
+        when(mapper.update(UPDATE_COMPANY_REQUEST, COMPANY_ENTITY)).thenReturn(UPDATED_ENTITY);
+        when(repository.save(UPDATED_ENTITY)).thenReturn(UPDATED_ENTITY);
+        when(mapper.toResponse(UPDATED_ENTITY)).thenReturn(COMPANY_RESPONSE);
+
+        var updatedCompany = service.update(1L, UPDATE_COMPANY_REQUEST);
+
+        assertThat(updatedCompany).isNotNull();
+        verify(mapper).update(UPDATE_COMPANY_REQUEST, COMPANY_ENTITY);
+        verify(repository).save(UPDATED_ENTITY);
+    }
+
+    @Test
+    public void updateCompany_WithUnexistingId_ThrowsException() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.update(1L, UPDATE_COMPANY_REQUEST)).isInstanceOf(ResourceNotFoundException.class);
     }
 
 }
