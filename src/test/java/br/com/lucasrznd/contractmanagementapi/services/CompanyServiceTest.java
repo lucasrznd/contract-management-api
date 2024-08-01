@@ -1,8 +1,6 @@
 package br.com.lucasrznd.contractmanagementapi.services;
 
 import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.ResourceNotFoundException;
-import br.com.lucasrznd.contractmanagementapi.dtos.request.CompanyRequest;
-import br.com.lucasrznd.contractmanagementapi.dtos.response.CompanyResponse;
 import br.com.lucasrznd.contractmanagementapi.entities.ClientCompany;
 import br.com.lucasrznd.contractmanagementapi.mappers.CompanyMapper;
 import br.com.lucasrznd.contractmanagementapi.repositories.ClientCompanyRepository;
@@ -16,11 +14,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import java.util.List;
 import java.util.Optional;
 
-import static br.com.lucasrznd.contractmanagementapi.creator.CreatorUtils.generateMock;
 import static br.com.lucasrznd.contractmanagementapi.utils.CompanyConstants.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -182,6 +177,23 @@ class CompanyServiceTest {
         assertThat(companiesList.size()).isEqualTo(1);
         verify(repository).findAll();
         verify(mapper).toResponse(COMPANY_ENTITY);
+    }
+
+    @Test
+    public void deleteCompany_WithExistingId_DoesNotThrowAnyException() {
+        when(repository.findById(1L)).thenReturn(Optional.of(COMPANY_ENTITY));
+
+        assertThatCode(() -> service.delete(1L)).doesNotThrowAnyException();
+        verify(repository).findById(1L);
+        verify(repository).delete(any());
+    }
+
+    @Test
+    public void deleteCompany_WithUnexistingId_ThrowsException() {
+        assertThatCode(() -> service.delete(1L)).isInstanceOf(ResourceNotFoundException.class);
+
+        verify(repository).findById(1L);
+        verify(repository, times(0)).delete(any());
     }
 
 }
