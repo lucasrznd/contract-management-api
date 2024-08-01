@@ -25,6 +25,11 @@ public abstract class CompanyConstants {
             "01153000"
     );
 
+    public static CompanyRequest INVALID_COMPANY_REQUEST = new CompanyRequest(
+            null, null, null, null, null, null, null,
+            null, null, null, null
+    );
+
     public static UpdateCompanyRequest UPDATE_COMPANY_REQUEST = new UpdateCompanyRequest(
             "Magazine Luiza Sa", "Magazine Luiza", "00000000000100", "120000385",
             "43988888888", "magalu@mail.com", "Rua Principal", "Centro", 1300, "Parana",
