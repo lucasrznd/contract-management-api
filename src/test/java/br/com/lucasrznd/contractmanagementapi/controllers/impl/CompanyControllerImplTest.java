@@ -76,6 +76,23 @@ class CompanyControllerImplTest {
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
+    @Test
+    public void deleteCompany_WithExistingId_ReturnsNoContent() throws Exception {
+        mockMvc.perform(delete("/companies/" + 1))
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$").doesNotExist());
+    }
+
+    @Test
+    public void deleteCompany_WithUnexistingId_ReturnsNotFound() throws Exception {
+        doThrow(ResourceNotFoundException.class).when(service).delete(1L);
+
+        mockMvc.perform(delete("/companies/" + 1))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value(NOT_FOUND.getReasonPhrase()))
+                .andExpect(jsonPath("$.status").value(NOT_FOUND.value()));
+    }
+
     private String toJson(final Object object) throws Exception {
         try {
             return new ObjectMapper().writeValueAsString(object);
