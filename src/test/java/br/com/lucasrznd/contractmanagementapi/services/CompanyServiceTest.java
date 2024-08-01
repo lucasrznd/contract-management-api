@@ -2,6 +2,7 @@ package br.com.lucasrznd.contractmanagementapi.services;
 
 import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.ResourceNotFoundException;
 import br.com.lucasrznd.contractmanagementapi.dtos.request.CompanyRequest;
+import br.com.lucasrznd.contractmanagementapi.dtos.response.CompanyResponse;
 import br.com.lucasrznd.contractmanagementapi.entities.ClientCompany;
 import br.com.lucasrznd.contractmanagementapi.mappers.CompanyMapper;
 import br.com.lucasrznd.contractmanagementapi.repositories.ClientCompanyRepository;
@@ -12,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.util.List;
 import java.util.Optional;
 
 import static br.com.lucasrznd.contractmanagementapi.creator.CreatorUtils.generateMock;
@@ -166,6 +168,20 @@ class CompanyServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.update(1L, UPDATE_COMPANY_REQUEST)).isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    public void listCompanies_ReturnsAllCompanies() {
+        List<ClientCompany> list = List.of(COMPANY_ENTITY);
+        when(repository.findAll()).thenReturn(list);
+        when(mapper.toResponse(COMPANY_ENTITY)).thenReturn(COMPANY_RESPONSE);
+
+        var companiesList = service.findAll();
+
+        assertThat(companiesList).isNotNull();
+        assertThat(companiesList.size()).isEqualTo(1);
+        verify(repository).findAll();
+        verify(mapper).toResponse(COMPANY_ENTITY);
     }
 
 }
