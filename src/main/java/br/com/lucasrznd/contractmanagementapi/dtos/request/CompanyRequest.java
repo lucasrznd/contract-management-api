@@ -5,7 +5,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.With;
 
+@With
 public record CompanyRequest(
         @Schema(description = "Business name", example = "Magazine Luiza Sa")
         @NotBlank(message = "Business name cannot be empty")
@@ -56,7 +58,7 @@ public record CompanyRequest(
         @Size(min = 4, max = 20, message = "State must contain between 4 and 20 characters")
         String state,
 
-        @Schema(description = "Zip code", example = "01153000 || 01153-000")
+        @Schema(description = "Zip code", example = "01153000")
         @NotBlank(message = "Zip code cannot be empty")
         @Size(min = 8, max = 9, message = "Zip code must contain between 8 and 9 characters")
         String zipCode) {
