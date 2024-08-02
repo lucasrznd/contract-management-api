@@ -58,7 +58,7 @@ public record ContractRequest(
         @Schema(description = "Payment due day", example = "10")
         @NotNull(message = "Payment due day cannot be null")
         @Size(min = 1, max = 2, message = "Payment due day must contain between 1 and 2 characters")
-        Integer paymentDueDate,
+        Integer paymentDueDay,
 
         @Schema(description = "Observation", example = "In this contract, the company receives 2 spots per month as a gift.")
         String observation) {

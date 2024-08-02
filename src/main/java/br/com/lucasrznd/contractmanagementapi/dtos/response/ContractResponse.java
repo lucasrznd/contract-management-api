@@ -16,7 +16,7 @@ public record ContractResponse(Long id,
                                int flashQuantity,
                                String newspaperParticipation,
                                PaymentMethod paymentMethod,
-                               Integer paymentDueDate,
+                               Integer paymentDueDay,
                                String observation
 ) {
 }
