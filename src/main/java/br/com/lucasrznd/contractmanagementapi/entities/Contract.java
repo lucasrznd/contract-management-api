@@ -39,7 +39,7 @@ public class Contract {
     private int flashQuantity;
     private String newspaperParticipation;
     private PaymentMethod paymentMethod;
-    private LocalDate dueDate;
+    private LocalDate paymentDueDay;
     private String observation;
 
 }
