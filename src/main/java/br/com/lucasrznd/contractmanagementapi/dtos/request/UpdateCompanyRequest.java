@@ -58,7 +58,7 @@ public record UpdateCompanyRequest(
         @Size(min = 4, max = 20, message = "State must contain between 4 and 20 characters")
         String state,
 
-        @Schema(description = "Zip code", example = "01153000 || 01153-000")
+        @Schema(description = "Zip code", example = "01153000")
         @NotBlank(message = "Zip code cannot be empty")
         @Size(min = 8, max = 9, message = "Zip code must contain between 8 and 9 characters")
         String zipCode) {
