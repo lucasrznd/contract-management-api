@@ -14,7 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import java.util.List;
 import java.util.Optional;
 
-import static br.com.lucasrznd.contractmanagementapi.utils.CompanyConstants.*;
+import static br.com.lucasrznd.contractmanagementapi.common.CompanyConstants.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

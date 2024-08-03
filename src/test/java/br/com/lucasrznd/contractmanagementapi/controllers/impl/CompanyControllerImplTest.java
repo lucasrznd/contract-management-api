@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static br.com.lucasrznd.contractmanagementapi.utils.CompanyConstants.*;
+import static br.com.lucasrznd.contractmanagementapi.common.CompanyConstants.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;

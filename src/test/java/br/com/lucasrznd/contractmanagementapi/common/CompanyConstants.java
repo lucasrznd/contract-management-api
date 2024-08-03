@@ -1,4 +1,4 @@
-package br.com.lucasrznd.contractmanagementapi.utils;
+package br.com.lucasrznd.contractmanagementapi.common;
 
 import br.com.lucasrznd.contractmanagementapi.dtos.request.CompanyRequest;
 import br.com.lucasrznd.contractmanagementapi.dtos.request.UpdateCompanyRequest;
