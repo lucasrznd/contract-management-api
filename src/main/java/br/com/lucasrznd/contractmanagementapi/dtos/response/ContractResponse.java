@@ -1,18 +1,17 @@
 package br.com.lucasrznd.contractmanagementapi.dtos.response;
 
-import br.com.lucasrznd.contractmanagementapi.entities.ClientCompany;
 import br.com.lucasrznd.contractmanagementapi.entities.enums.PaymentMethod;
 
 import java.time.LocalDate;
 
 public record ContractResponse(Long id,
-                               ClientCompany clientCompany,
+                               String companyBusinessName,
                                Integer advertisingOrder,
                                Double spotDuration,
                                int quantitySpotDay,
                                LocalDate startDate,
                                LocalDate endDate,
-                               Double monthlyPrice,
+                               String monthlyPriceFmt,
                                int flashQuantity,
                                String newspaperParticipation,
                                PaymentMethod paymentMethod,
