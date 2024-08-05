@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.With;
 
 import java.time.LocalDate;
 
+@With
 public record ContractRequest(
         @Schema(description = "Client company")
         @NotNull(message = "Company cannot be null")
