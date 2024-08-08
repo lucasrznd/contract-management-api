@@ -16,6 +16,32 @@ This **component** is responsible for managing contracts, specifically for radio
 - **Business Company Registration**: Endpoints to add and manage clients' companies.
 - **Contract Registration**: Endpoints to add and manage contracts associated with these companies.
 
+<h2 id="installation">🛠️ Installation</h2>
+
+1. Clone the repository to your local environment:
+
+```
+git clone https://github.com/lucasrznd/contract-management-api.git
+```
+
+2. Navigate to the project directory:
+
+```
+cd contract-management-api
+```
+
+3. Build the Docker image:
+
+```
+docker build -t contracts-api .
+```
+
+5. Start the application using Docker Compose:
+
+```
+docker-compose up -d
+```
+
 <h2 id="author">👨🏻‍💻 Author</h2>
 
 <table>
