@@ -25,7 +25,7 @@ public record UpdateCompanyRequest(
         String registrationNumber,
 
         @Schema(description = "State registration", example = "120000385")
-        @Size(min = 8, max = 15, message = "State registration must contain between 8 and 15 characters")
+        @Size(max = 20, message = "State registration must contain maximum of 20 characters")
         String stateRegistration,
 
         @Schema(description = "Phone number", example = "43988888888")
