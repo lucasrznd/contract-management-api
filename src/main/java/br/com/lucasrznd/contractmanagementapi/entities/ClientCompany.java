@@ -36,6 +36,7 @@ public class ClientCompany {
     private String streetName;
     private String avenueName;
     private Integer number;
+    private String city;
     private String state;
     private String zipCode;
 

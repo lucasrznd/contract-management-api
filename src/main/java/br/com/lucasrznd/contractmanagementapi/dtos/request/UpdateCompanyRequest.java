@@ -53,6 +53,11 @@ public record UpdateCompanyRequest(
         @NotNull(message = "Address number cannot be empty")
         Integer number,
 
+        @Schema(description = "City", example = "Curitiba")
+        @NotBlank(message = "City cannot be empty")
+        @Size(min = 3, max = 100, message = "City must contain between 4 and 20 characters")
+        String city,
+
         @Schema(description = "State", example = "Parana")
         @NotBlank(message = "State cannot be empty")
         @Size(min = 4, max = 20, message = "State must contain between 4 and 20 characters")

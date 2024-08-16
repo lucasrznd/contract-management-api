@@ -10,6 +10,7 @@ public record CompanyResponse(Long id,
                               String streetName,
                               String avenueName,
                               Integer number,
+                              String city,
                               String state,
                               String zipCode) {
 }
