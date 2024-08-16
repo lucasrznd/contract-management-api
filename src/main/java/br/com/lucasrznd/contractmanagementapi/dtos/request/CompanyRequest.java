@@ -60,7 +60,7 @@ public record CompanyRequest(
 
         @Schema(description = "State", example = "Parana")
         @NotBlank(message = "State cannot be empty")
-        @Size(min = 4, max = 20, message = "State must contain between 4 and 20 characters")
+        @Size(min = 2, max = 20, message = "State must contain between 2 and 20 characters")
         String state,
 
         @Schema(description = "Zip code", example = "01153000")
