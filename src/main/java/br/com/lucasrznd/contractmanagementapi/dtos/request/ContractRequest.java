@@ -16,6 +16,11 @@ public record ContractRequest(
         @NotNull(message = "Company cannot be null")
         CompanyResponse clientCompany,
 
+        @Schema(description = "Name of the seller", example = "Lucas Rezende")
+        @NotBlank(message = "Seller Name cannot be empty")
+        @Size(min = 2, max = 50, message = "Seller name must contain between 2 and 50 characters")
+        String sellerName,
+
         @Schema(description = "Advertising order", example = "200")
         @NotNull(message = "Advertising order cannot be null")
         Integer advertisingOrder,

@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 public record ContractResponse(Long id,
                                String companyBusinessName,
+                               String sellerName,
                                Integer advertisingOrder,
                                Double spotDuration,
                                int quantitySpotDay,
