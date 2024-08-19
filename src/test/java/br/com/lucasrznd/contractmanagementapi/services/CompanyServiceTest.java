@@ -180,6 +180,17 @@ class CompanyServiceTest {
     }
 
     @Test
+    public void countCompanies_ReturnsCompaniesQuantity() {
+        when(repository.count()).thenReturn(1L);
+
+        var companiesQuantity = service.countCompanies();
+
+        assertThat(companiesQuantity).isNotNull();
+        assertThat(companiesQuantity).isEqualTo(1);
+        verify(repository).count();
+    }
+
+    @Test
     public void deleteCompany_WithExistingId_DoesNotThrowAnyException() {
         when(repository.findById(1L)).thenReturn(Optional.of(COMPANY_ENTITY));
 

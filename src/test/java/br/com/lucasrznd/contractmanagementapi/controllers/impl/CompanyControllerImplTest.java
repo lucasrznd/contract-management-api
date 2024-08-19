@@ -77,6 +77,15 @@ class CompanyControllerImplTest {
     }
 
     @Test
+    public void countCompanies_ReturnsOk() throws Exception {
+        when(service.countCompanies()).thenReturn(1);
+
+        mockMvc.perform(get("/companies/count"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(1));
+    }
+
+    @Test
     public void deleteCompany_WithExistingId_ReturnsNoContent() throws Exception {
         mockMvc.perform(delete("/companies/" + 1))
                 .andExpect(status().isNoContent())
