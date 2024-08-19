@@ -27,6 +27,10 @@ public class ContractService {
         return repository.findAll().stream().map(mapper::toResponse).toList();
     }
 
+    public Integer countContracts() {
+        return Math.toIntExact(repository.count());
+    }
+
     public ContractResponse update(final Long id, final UpdateContractRequest request) {
         Contract entity = find(id);
 

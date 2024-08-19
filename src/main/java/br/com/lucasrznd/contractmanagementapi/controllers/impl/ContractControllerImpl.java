@@ -30,6 +30,11 @@ public class ContractControllerImpl implements ContractController {
     }
 
     @Override
+    public ResponseEntity<Integer> countContracts() {
+        return ResponseEntity.ok().body(service.countContracts());
+    }
+
+    @Override
     public ResponseEntity<ContractResponse> update(Long id, UpdateContractRequest request) {
         return ResponseEntity.ok().body(service.update(id, request));
     }
