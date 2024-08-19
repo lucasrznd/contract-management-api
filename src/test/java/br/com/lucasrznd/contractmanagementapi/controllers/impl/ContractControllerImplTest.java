@@ -1,5 +1,6 @@
 package br.com.lucasrznd.contractmanagementapi.controllers.impl;
 
+import br.com.lucasrznd.contractmanagementapi.config.WebConfig;
 import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.ResourceNotFoundException;
 import br.com.lucasrznd.contractmanagementapi.services.ContractService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +36,9 @@ class ContractControllerImplTest {
 
     @MockBean
     private ContractService service;
+
+    @MockBean
+    private WebConfig webConfig;
 
     @Test
     public void saveContract_WithValidData_ReturnsCreated() throws Exception {
@@ -79,6 +83,15 @@ class ContractControllerImplTest {
         mockMvc.perform(get("/contracts"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    public void countContracts_ReturnsOk() throws Exception {
+        when(service.countContracts()).thenReturn(1);
+
+        mockMvc.perform(get("/contracts/count"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(1));
     }
 
     @Test

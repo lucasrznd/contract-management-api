@@ -161,6 +161,17 @@ class ContractServiceTest {
     }
 
     @Test
+    public void countContracts_ReturnsContractsQuantity() {
+        when(repository.count()).thenReturn(1L);
+
+        var contractsQuantity = service.countContracts();
+
+        assertThat(contractsQuantity).isNotNull();
+        assertThat(contractsQuantity).isEqualTo(1);
+        verify(repository).count();
+    }
+
+    @Test
     public void deleteContract_WithExistingId_DoesNotThrowAnyException() {
         when(repository.findById(1L)).thenReturn(Optional.of(CONTRACT_ENTITY));
 
