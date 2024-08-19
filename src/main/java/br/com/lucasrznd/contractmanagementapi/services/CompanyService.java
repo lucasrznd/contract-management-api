@@ -27,6 +27,10 @@ public class CompanyService {
         return repository.findAll().stream().map(mapper::toResponse).toList();
     }
 
+    public Integer countCompanies() {
+        return Math.toIntExact(repository.count());
+    }
+
     public CompanyResponse update(final Long id, final UpdateCompanyRequest request) {
         ClientCompany entity = find(id);
 

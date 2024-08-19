@@ -30,6 +30,11 @@ public class CompanyControllerImpl implements CompanyController {
     }
 
     @Override
+    public ResponseEntity<Integer> countCompanies() {
+        return ResponseEntity.ok().body(service.countCompanies());
+    }
+
+    @Override
     public ResponseEntity<CompanyResponse> update(Long id, UpdateCompanyRequest request) {
         return ResponseEntity.ok().body(service.update(id, request));
     }
