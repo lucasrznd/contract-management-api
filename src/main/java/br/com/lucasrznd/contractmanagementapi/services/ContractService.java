@@ -10,6 +10,8 @@ import br.com.lucasrznd.contractmanagementapi.repositories.ContractRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -25,6 +27,17 @@ public class ContractService {
 
     public List<ContractResponse> findAll() {
         return repository.findAll().stream().map(mapper::toResponse).toList();
+    }
+
+    public List<ContractResponse> findAllByExpirationNextWeek() {
+        var list = repository.findAll();
+
+        List<Contract> filteredList = list.
+                stream()
+                .filter(contract -> contract.getEndDate().minusDays(7).isEqual(LocalDate.now()))
+                .toList();
+
+        return filteredList.stream().map(mapper::toResponse).toList();
     }
 
     public Integer countContracts() {

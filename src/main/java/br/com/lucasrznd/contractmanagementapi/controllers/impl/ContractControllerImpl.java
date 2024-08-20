@@ -30,6 +30,11 @@ public class ContractControllerImpl implements ContractController {
     }
 
     @Override
+    public ResponseEntity<List<ContractResponse>> findAllByExpirationNextWeek() {
+        return ResponseEntity.ok().body(service.findAllByExpirationNextWeek());
+    }
+
+    @Override
     public ResponseEntity<Integer> countContracts() {
         return ResponseEntity.ok().body(service.countContracts());
     }

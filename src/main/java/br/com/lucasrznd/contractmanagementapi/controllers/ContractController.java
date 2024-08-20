@@ -48,6 +48,16 @@ public interface ContractController {
     @GetMapping
     ResponseEntity<List<ContractResponse>> findAll();
 
+    @Operation(summary = "Find contracts that will expire in 7 days")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contracts found", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = ContractResponse.class)))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping("/expiration-next-week")
+    ResponseEntity<List<ContractResponse>> findAllByExpirationNextWeek();
+
     @Operation(summary = "Returns quantity of contracts")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Quantity found", content = @Content(
