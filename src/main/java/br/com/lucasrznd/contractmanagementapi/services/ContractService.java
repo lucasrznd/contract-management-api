@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -33,7 +35,9 @@ public class ContractService {
 
         List<Contract> filteredList = list.
                 stream()
-                .filter(contract -> contract.getEndDate().minusDays(7).isEqual(LocalDate.now()))
+                .filter(contract -> (contract.getEndDate().isAfter(LocalDate.now()) || contract.getEndDate().isEqual(LocalDate.now()))
+                        && (contract.getEndDate().compareTo(LocalDate.now().plusDays(7)) <= 0)
+                        && contract.getEndDate().getMonth().equals(LocalDate.now().getMonth()))
                 .toList();
 
         return filteredList.stream().map(mapper::toResponse).toList();
