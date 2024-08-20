@@ -161,6 +161,19 @@ class ContractServiceTest {
     }
 
     @Test
+    public void listContracts_WithExpirationNextWeek_ReturnsExpiringContracts() {
+        when(repository.findAll()).thenReturn(CONTRACT_ENTITY_LIST);
+        when(mapper.toResponse(CONTRACT_ENTITY_LIST.get(0))).thenReturn(CONTRACT_RESPONSE);
+
+        var contracts = service.findAllByExpirationNextWeek();
+
+        assertThat(contracts).isNotEmpty();
+        assertThat(contracts.size()).isEqualTo(1);
+        verify(repository).findAll();
+        verify(mapper).toResponse(CONTRACT_ENTITY);
+    }
+
+    @Test
     public void countContracts_ReturnsContractsQuantity() {
         when(repository.count()).thenReturn(1L);
 

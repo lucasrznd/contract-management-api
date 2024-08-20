@@ -86,6 +86,15 @@ class ContractControllerImplTest {
     }
 
     @Test
+    public void listContracts_WithExpirationNextWeek_ReturnsExpiringContracts() throws Exception {
+        when(service.findAllByExpirationNextWeek()).thenReturn(List.of(CONTRACT_RESPONSE));
+
+        mockMvc.perform(get("/contracts/expiration-next-week"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
     public void countContracts_ReturnsOk() throws Exception {
         when(service.countContracts()).thenReturn(1);
 

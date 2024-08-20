@@ -7,6 +7,7 @@ import br.com.lucasrznd.contractmanagementapi.entities.Contract;
 import br.com.lucasrznd.contractmanagementapi.entities.enums.PaymentMethod;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static br.com.lucasrznd.contractmanagementapi.common.CompanyConstants.COMPANY_ENTITY;
 import static br.com.lucasrznd.contractmanagementapi.common.CompanyConstants.COMPANY_RESPONSE;
@@ -15,7 +16,7 @@ public class ContractConstants {
 
     public static Contract CONTRACT_ENTITY = new Contract(
             1L, COMPANY_ENTITY, "Lucas Rezende", 200, 0.30, 1, LocalDate.of(2024, 1, 1),
-            LocalDate.of(2024, 3, 1), 500.00, 2, "10 Minutes", PaymentMethod.BOLETO,
+            LocalDate.now().plusDays(7), 500.00, 2, "10 Minutes", PaymentMethod.BOLETO,
             10, "In this contract, the company receives 2 spots per month as a gift."
     );
 
@@ -45,8 +46,10 @@ public class ContractConstants {
 
     public static ContractResponse CONTRACT_RESPONSE = new ContractResponse(
             1L, COMPANY_ENTITY.getBusinessName(), "Lucas Rezende", 200, 0.30, 1, LocalDate.of(2024, 1, 1),
-            LocalDate.of(2024, 3, 1), "R$ 500,00", 2, "10 Minutes", PaymentMethod.BOLETO,
+            LocalDate.now().plusDays(7), "R$ 500,00", 2, "10 Minutes", PaymentMethod.BOLETO,
             10, "In this contract, the company receives 2 spots per month as a gift."
     );
+
+    public static List<Contract> CONTRACT_ENTITY_LIST = List.of(CONTRACT_ENTITY);
 
 }
