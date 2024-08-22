@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static br.com.lucasrznd.contractmanagementapi.common.ContractConstants.*;
@@ -92,6 +93,16 @@ class ContractControllerImplTest {
         mockMvc.perform(get("/contracts/expiration-next-week"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    public void listFiveContracts_ReturnsOk() throws Exception {
+        when(service.findLastFive()).thenReturn(Arrays.asList(CONTRACT_RESPONSE, CONTRACT_RESPONSE,
+                CONTRACT_RESPONSE, CONTRACT_RESPONSE, CONTRACT_RESPONSE));
+
+        mockMvc.perform(get("/contracts/last-5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(5)));
     }
 
     @Test

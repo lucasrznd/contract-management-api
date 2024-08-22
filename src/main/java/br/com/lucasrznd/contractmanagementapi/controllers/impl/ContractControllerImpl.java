@@ -35,6 +35,11 @@ public class ContractControllerImpl implements ContractController {
     }
 
     @Override
+    public ResponseEntity<List<ContractResponse>> findLastFive() {
+        return ResponseEntity.ok().body(service.findLastFive());
+    }
+
+    @Override
     public ResponseEntity<Integer> countContracts() {
         return ResponseEntity.ok().body(service.countContracts());
     }

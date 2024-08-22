@@ -41,6 +41,10 @@ public class ContractService {
         return filteredList.stream().map(mapper::toResponse).toList();
     }
 
+    public List<ContractResponse> findLastFive() {
+        return repository.findLastFiveOrderByIdDesc().stream().map(mapper::toResponse).toList();
+    }
+
     public Integer countContracts() {
         return Math.toIntExact(repository.count());
     }

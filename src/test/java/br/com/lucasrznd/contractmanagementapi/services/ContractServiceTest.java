@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -171,6 +172,22 @@ class ContractServiceTest {
         assertThat(contracts.size()).isEqualTo(1);
         verify(repository).findAll();
         verify(mapper).toResponse(CONTRACT_ENTITY);
+    }
+
+    @Test
+    public void listLastFiveContracts_ReturnsContracts() {
+        List<Contract> contractEntityList = Arrays.asList(CONTRACT_ENTITY, CONTRACT_ENTITY,
+                CONTRACT_ENTITY, CONTRACT_ENTITY, CONTRACT_ENTITY);
+
+        when(repository.findLastFiveOrderByIdDesc()).thenReturn(contractEntityList);
+        when(mapper.toResponse(CONTRACT_ENTITY)).thenReturn(CONTRACT_RESPONSE);
+
+        var contracts = service.findLastFive();
+
+        assertThat(contracts).isNotEmpty();
+        assertThat(contracts.size()).isEqualTo(5);
+        verify(repository).findLastFiveOrderByIdDesc();
+        verify(mapper, times(5)).toResponse(any(Contract.class));
     }
 
     @Test
