@@ -3,10 +3,8 @@ package br.com.lucasrznd.contractmanagementapi.dtos.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.With;
 
-@With
-public record SellerRequest(
+public record UpdateSellerRequest(
         @Schema(description = "Name of the seller", example = "Lucas Rezende")
         @NotBlank(message = "Name cannot be empty")
         @Size(min = 5, max = 50, message = "Name must contain between 5 and 50 characters")
