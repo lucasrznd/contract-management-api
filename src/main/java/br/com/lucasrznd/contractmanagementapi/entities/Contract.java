@@ -30,7 +30,9 @@ public class Contract {
 
     @ManyToOne
     private ClientCompany clientCompany;
-    private String sellerName;
+
+    @ManyToOne
+    private Seller seller;
     private Integer advertisingOrder;
     private Double spotDuration;
     private int quantitySpotDay;

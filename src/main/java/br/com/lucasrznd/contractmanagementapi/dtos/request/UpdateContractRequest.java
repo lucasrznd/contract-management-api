@@ -1,6 +1,7 @@
 package br.com.lucasrznd.contractmanagementapi.dtos.request;
 
 import br.com.lucasrznd.contractmanagementapi.dtos.response.CompanyResponse;
+import br.com.lucasrznd.contractmanagementapi.dtos.response.SellerResponse;
 import br.com.lucasrznd.contractmanagementapi.entities.enums.PaymentMethod;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -14,10 +15,9 @@ public record UpdateContractRequest(
         @NotNull(message = "Company cannot be null")
         CompanyResponse clientCompany,
 
-        @Schema(description = "Name of the seller", example = "Lucas Rezende")
-        @NotBlank(message = "Seller Name cannot be empty")
-        @Size(min = 2, max = 50, message = "Seller name must contain between 2 and 50 characters")
-        String sellerName,
+        @Schema(description = "Seller")
+        @NotNull(message = "Seller cannot be null")
+        SellerResponse seller,
 
         @Schema(description = "Advertising order", example = "200")
         @NotNull(message = "Advertising order cannot be null")

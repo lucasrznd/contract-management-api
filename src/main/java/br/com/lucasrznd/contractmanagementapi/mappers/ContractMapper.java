@@ -11,10 +11,12 @@ import java.text.NumberFormat;
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
-        uses = {CompanyMapper.class})
+        uses = {CompanyMapper.class, SellerMapper.class})
 public interface ContractMapper {
 
     @Mapping(target = "companyBusinessName", source = "clientCompany.businessName")
+    @Mapping(target = "sellerName", source = "seller.name")
+    @Mapping(target = "sellerImageUrl", source = "seller.urlImage")
     @Mapping(target = "monthlyPriceFmt", expression = "java(setMonthlyPriceFmt(contract))")
     ContractResponse toResponse(final Contract contract);
 
