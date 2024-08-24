@@ -29,7 +29,6 @@ public class ClientCompany {
     @Column(unique = true)
     private String registrationNumber;
 
-    @Column(unique = true)
     private String stateRegistration;
     private String phoneNumber;
     private String email;
