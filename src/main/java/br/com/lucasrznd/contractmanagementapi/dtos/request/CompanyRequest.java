@@ -35,8 +35,7 @@ public record CompanyRequest(
 
         @Schema(description = "Company email", example = "magalu@mail.com")
         @Email(message = "Invalid email")
-        @NotBlank(message = "Email cannot be empty")
-        @Size(min = 6, max = 50, message = "Email must contain between 6 and 50 characters")
+        @Size(max = 50, message = "Email must contain between 6 and 50 characters")
         String email,
 
         @Schema(description = "Street name", example = "Rua Principal")
