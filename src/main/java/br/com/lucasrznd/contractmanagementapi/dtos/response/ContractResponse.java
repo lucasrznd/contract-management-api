@@ -5,7 +5,7 @@ import br.com.lucasrznd.contractmanagementapi.entities.enums.PaymentMethod;
 import java.time.LocalDate;
 
 public record ContractResponse(Long id,
-                               String companyBusinessName,
+                               String companyTradeName,
                                String sellerName,
                                String sellerImageUrl,
                                Integer advertisingOrder,

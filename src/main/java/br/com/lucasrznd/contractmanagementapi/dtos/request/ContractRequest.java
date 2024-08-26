@@ -4,7 +4,6 @@ import br.com.lucasrznd.contractmanagementapi.dtos.response.CompanyResponse;
 import br.com.lucasrznd.contractmanagementapi.dtos.response.SellerResponse;
 import br.com.lucasrznd.contractmanagementapi.entities.enums.PaymentMethod;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.With;
@@ -50,8 +49,7 @@ public record ContractRequest(
         int flashQuantity,
 
         @Schema(description = "Newspaper participation", example = "15 minutes")
-        @NotBlank(message = "Newspaper participation cannot be empty")
-        @Size(min = 10, max = 15, message = "Newspaper participation must contain between 10 and 50 characters")
+        @Size(max = 15, message = "Newspaper participation must contain maximum of 15 characters")
         String newspaperParticipation,
 
         @Schema(description = "Payment method", example = "BOLETO")

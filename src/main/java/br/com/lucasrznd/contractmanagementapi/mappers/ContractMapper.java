@@ -14,7 +14,7 @@ import java.text.NumberFormat;
         uses = {CompanyMapper.class, SellerMapper.class})
 public interface ContractMapper {
 
-    @Mapping(target = "companyBusinessName", source = "clientCompany.businessName")
+    @Mapping(target = "companyTradeName", source = "clientCompany.tradeName")
     @Mapping(target = "sellerName", source = "seller.name")
     @Mapping(target = "sellerImageUrl", source = "seller.urlImage")
     @Mapping(target = "monthlyPriceFmt", expression = "java(setMonthlyPriceFmt(contract))")
