@@ -34,9 +34,7 @@ public class ContractService {
         List<Contract> filteredList = list.
                 stream()
                 .filter(contract -> (contract.getEndDate().isAfter(LocalDate.now()) || contract.getEndDate().isEqual(LocalDate.now()))
-                        && (contract.getEndDate().compareTo(LocalDate.now().plusDays(7)) <= 0)
-                        && contract.getEndDate().getMonth().equals(LocalDate.now().getMonth()))
-                .toList();
+                        && (contract.getEndDate().compareTo(LocalDate.now().plusDays(7)) <= 0)).toList();
 
         return filteredList.stream().map(mapper::toResponse).toList();
     }
