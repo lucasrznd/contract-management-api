@@ -47,7 +47,7 @@ public class ContractConstants {
     );
 
     public static ContractResponse CONTRACT_RESPONSE = new ContractResponse(
-            1L, COMPANY_ENTITY.getBusinessName(), "Lucas Rezende", "", 200, 0.30, 1, LocalDate.of(2024, 1, 1),
+            1L, COMPANY_ENTITY.getTradeName(), "Lucas Rezende", "", 200, 0.30, 1, LocalDate.of(2024, 1, 1),
             LocalDate.now().plusDays(7), "R$ 500,00", 2, "10 Minutes", PaymentMethod.BOLETO,
             10, "In this contract, the company receives 2 spots per month as a gift."
     );

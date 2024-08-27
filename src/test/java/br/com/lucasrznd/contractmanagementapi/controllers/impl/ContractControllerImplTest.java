@@ -47,7 +47,7 @@ class ContractControllerImplTest {
 
         mockMvc.perform(post("/contracts").contentType(APPLICATION_JSON).content(toJson(CONTRACT_REQUEST)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.companyBusinessName").value(CONTRACT_RESPONSE.companyBusinessName()));
+                .andExpect(jsonPath("$.companyTradeName").value(CONTRACT_RESPONSE.companyTradeName()));
     }
 
     @Test
@@ -64,7 +64,7 @@ class ContractControllerImplTest {
 
         mockMvc.perform(put("/contracts/" + 1).contentType(APPLICATION_JSON).content(toJson(UPDATE_CONTRACT_REQUEST)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.companyBusinessName").value(UPDATE_CONTRACT_REQUEST.clientCompany().businessName()));
+                .andExpect(jsonPath("$.companyTradeName").value(UPDATE_CONTRACT_REQUEST.clientCompany().tradeName()));
     }
 
     @Test
