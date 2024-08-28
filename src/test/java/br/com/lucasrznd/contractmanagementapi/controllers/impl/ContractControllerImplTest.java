@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -103,6 +104,20 @@ class ContractControllerImplTest {
         mockMvc.perform(get("/contracts/last-5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(5)));
+    }
+
+    @Test
+    public void listContracts_WithCompanyAndSellerAndDateRange_ReturnsOk() throws Exception {
+        when(service.list(LocalDate.of(2024, 1, 1),
+                LocalDate.of(2025, 1, 1), 1L, 1L)).thenReturn(List.of(CONTRACT_RESPONSE));
+
+        mockMvc.perform(get("/contracts/list")
+                        .param("startDate", "2024-01-01")
+                        .param("endDate", "2025-01-01")
+                        .param("companyId", "1")
+                        .param("sellerId", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test

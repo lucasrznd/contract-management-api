@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -188,6 +189,20 @@ class ContractServiceTest {
         assertThat(contracts.size()).isEqualTo(5);
         verify(repository).findLastFiveOrderByIdDesc();
         verify(mapper, times(5)).toResponse(any(Contract.class));
+    }
+
+    @Test
+    public void listContracts_WithCompanyAndSellerAndDateRange_ReturnsContracts() {
+        when(repository.findByCompanyAndSellerAndDateRange(LocalDate.of(2024, 1, 1),
+                LocalDate.of(2025, 1, 1), 1L, 1L)).thenReturn(CONTRACT_ENTITY_LIST);
+        when(mapper.toResponse(CONTRACT_ENTITY_LIST.get(0))).thenReturn(CONTRACT_RESPONSE);
+
+        var contracts = service.list(LocalDate.of(2024, 1, 1), LocalDate.of(2025, 1, 1), 1L, 1L);
+
+        assertThat(contracts).isNotEmpty();
+        assertThat(contracts.size()).isEqualTo(1);
+        verify(repository).findByCompanyAndSellerAndDateRange(LocalDate.of(2024, 1, 1), LocalDate.of(2025, 1, 1), 1L, 1L);
+        verify(mapper).toResponse(CONTRACT_ENTITY_LIST.get(0));
     }
 
     @Test
