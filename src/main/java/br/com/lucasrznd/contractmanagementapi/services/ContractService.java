@@ -43,6 +43,12 @@ public class ContractService {
         return repository.findLastFiveOrderByIdDesc().stream().map(mapper::toResponse).toList();
     }
 
+    public List<ContractResponse> list(LocalDate startDate, LocalDate endDate, Long companyId, Long sellerId) {
+        return repository
+                .findByCompanyAndSellerAndDateRange(startDate, endDate, companyId, sellerId)
+                .stream().map(mapper::toResponse).toList();
+    }
+
     public Integer countContracts() {
         return Math.toIntExact(repository.count());
     }

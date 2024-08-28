@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -37,6 +38,11 @@ public class ContractControllerImpl implements ContractController {
     @Override
     public ResponseEntity<List<ContractResponse>> findLastFive() {
         return ResponseEntity.ok().body(service.findLastFive());
+    }
+
+    @Override
+    public ResponseEntity<List<ContractResponse>> list(LocalDate startDate, LocalDate endDate, Long companyId, Long sellerId) {
+        return ResponseEntity.ok().body(service.list(startDate, endDate, companyId, sellerId));
     }
 
     @Override

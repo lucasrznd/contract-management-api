@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -67,6 +68,23 @@ public interface ContractController {
     })
     @GetMapping("/last-5")
     ResponseEntity<List<ContractResponse>> findLastFive();
+
+    @Operation(summary = "Find filtered contracts")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contracts found", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = ContractResponse.class)))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping("/list")
+    ResponseEntity<List<ContractResponse>> list(@Parameter(description = "Start Date", example = "2024-08-01")
+                                                @RequestParam(name = "startDate") LocalDate startDate,
+                                                @Parameter(description = "End Date", example = "2024-09-01")
+                                                @RequestParam(name = "endDate") LocalDate endDate,
+                                                @Parameter(description = "Company Id", example = "1")
+                                                @RequestParam(name = "companyId", required = false) Long companyId,
+                                                @Parameter(description = "Seller Id", example = "1")
+                                                @RequestParam(name = "sellerId", required = false) Long sellerId);
 
     @Operation(summary = "Returns quantity of contracts")
     @ApiResponses(value = {
