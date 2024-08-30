@@ -11,7 +11,7 @@ import lombok.With;
 public record CompanyRequest(
         @Schema(description = "Business name", example = "Magazine Luiza Sa")
         @NotBlank(message = "Business name cannot be empty")
-        @Size(min = 5, max = 30, message = "Business name must contain between 5 and 30 characters")
+        @Size(min = 5, max = 150, message = "Business name must contain between 5 and 150 characters")
         String businessName,
 
         @Schema(description = "Trade name", example = "Magazine Luiza")
