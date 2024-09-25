@@ -36,6 +36,8 @@ public class Contract {
     private Integer advertisingOrder;
     private Double spotDuration;
     private int quantitySpotDay;
+    private Double testimonialDuration;
+    private int testimonialQuantity;
     private LocalDate startDate;
     private LocalDate endDate;
     private Double monthlyPrice;

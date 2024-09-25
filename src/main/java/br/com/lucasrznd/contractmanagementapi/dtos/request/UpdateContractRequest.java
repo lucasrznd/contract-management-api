@@ -30,6 +30,14 @@ public record UpdateContractRequest(
         @NotNull(message = "Quantity spot day cannot be null")
         int quantitySpotDay,
 
+        @Schema(description = "Testimonial duration", example = "0.45")
+        @NotNull(message = "Testimonial duration cannot be null")
+        Double testimonialDuration,
+
+        @Schema(description = "Testimonial quantity", example = "1 || 2 || 3")
+        @NotNull(message = "Testimonial quantity cannot be null")
+        int testimonialQuantity,
+
         @Schema(description = "Contract start date", example = "2024/01/01")
         @NotNull(message = "Start date cannot be null")
         LocalDate startDate,
