@@ -130,6 +130,15 @@ class ContractControllerImplTest {
     }
 
     @Test
+    public void getTotalEstimatedRevenue_ReturnsOk() throws Exception {
+        when(service.totalEstimatedRevenue()).thenReturn("R$ 1.200,00");
+
+        mockMvc.perform(get("/contracts/total-estimated-revenue"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("R$ 1.200,00"));
+    }
+
+    @Test
     public void deleteContract_WithExistingId_ReturnsNoContent() throws Exception {
         mockMvc.perform(delete("/contracts/" + 1))
                 .andExpect(status().isNoContent())
