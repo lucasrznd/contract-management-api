@@ -10,6 +10,7 @@ import br.com.lucasrznd.contractmanagementapi.repositories.ContractRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -51,6 +52,20 @@ public class ContractService {
 
     public Integer countContracts() {
         return Math.toIntExact(repository.count());
+    }
+
+    public String totalEstimatedRevenue() {
+        List<Contract> contracts = repository.findAll();
+
+        int monthDiff;
+        Double totalRevenue = 0D;
+
+        for (Contract contract : contracts) {
+            monthDiff = contract.getEndDate().getMonth().compareTo(contract.getStartDate().getMonth());
+            totalRevenue += contract.getMonthlyPrice() * Math.abs(monthDiff);
+        }
+
+        return NumberFormat.getCurrencyInstance().format(totalRevenue);
     }
 
     public ContractResponse update(final Long id, final UpdateContractRequest request) {

@@ -51,6 +51,11 @@ public class ContractControllerImpl implements ContractController {
     }
 
     @Override
+    public ResponseEntity<String> totalEstimatedRevenue() {
+        return ResponseEntity.ok().body(service.totalEstimatedRevenue());
+    }
+
+    @Override
     public ResponseEntity<ContractResponse> update(Long id, UpdateContractRequest request) {
         return ResponseEntity.ok().body(service.update(id, request));
     }

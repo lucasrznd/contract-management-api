@@ -96,6 +96,16 @@ public interface ContractController {
     @GetMapping("/count")
     ResponseEntity<Integer> countContracts();
 
+    @Operation(summary = "Returns total estimated revenue")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Total Estimated Revenue found", content = @Content(
+                    mediaType = TEXT_PLAIN_VALUE, schema = @Schema(implementation = Double.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = StandardError.class))))
+    })
+    @GetMapping("/total-estimated-revenue")
+    ResponseEntity<String> totalEstimatedRevenue();
+
     @Operation(summary = "Update contract")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Contract updated", content = @Content(
