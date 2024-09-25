@@ -2,7 +2,6 @@ package br.com.lucasrznd.contractmanagementapi.services;
 
 import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.ResourceNotFoundException;
 import br.com.lucasrznd.contractmanagementapi.entities.Contract;
-import br.com.lucasrznd.contractmanagementapi.entities.enums.PaymentMethod;
 import br.com.lucasrznd.contractmanagementapi.mappers.ContractMapper;
 import br.com.lucasrznd.contractmanagementapi.repositories.ContractRepository;
 import org.junit.jupiter.api.Test;
@@ -17,9 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static br.com.lucasrznd.contractmanagementapi.common.CompanyConstants.COMPANY_ENTITY;
 import static br.com.lucasrznd.contractmanagementapi.common.ContractConstants.*;
-import static br.com.lucasrznd.contractmanagementapi.common.SellerConstants.SELLER_ENTITY;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
