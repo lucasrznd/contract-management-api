@@ -29,6 +29,7 @@ public class ClientCompany {
     @Column(unique = true)
     private String registrationNumber;
 
+    private String cpf;
     private String stateRegistration;
     private String phoneNumber;
     private String email;
