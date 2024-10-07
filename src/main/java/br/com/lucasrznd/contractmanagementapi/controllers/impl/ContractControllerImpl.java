@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.MediaType.APPLICATION_PDF;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,6 +55,16 @@ public class ContractControllerImpl implements ContractController {
     @Override
     public ResponseEntity<String> totalEstimatedRevenue() {
         return ResponseEntity.ok().body(service.totalEstimatedRevenue());
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getPDF(Long id) {
+        byte[] pdfBytes = service.getPDF(id);
+
+        return ResponseEntity.ok()
+                .header(CONTENT_DISPOSITION, "attachment; filename=" + "CONTRATO.pdf")
+                .contentType(APPLICATION_PDF)
+                .body(pdfBytes);
     }
 
     @Override
