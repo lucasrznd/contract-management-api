@@ -15,6 +15,10 @@ public abstract class StringUtils {
         return dtf.format(date);
     }
 
+    public static String formatPhoneNumber(String phoneNumber) {
+        return "(" + phoneNumber.substring(0, 2) + ") " + phoneNumber.charAt(2) + " " + phoneNumber.substring(3, 7) + "-" + phoneNumber.substring(7);
+    }
+
     public static String currentDate() {
         Locale locale = new Locale("pt", "BR");
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("'Jacarezinho,' dd 'de' MMMM 'de' yyyy", locale);
