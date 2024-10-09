@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+import response.DocResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class ContractService {
     private final ContractRepository repository;
     private final ContractMapper mapper;
     private final GeneratePDFService pdfService;
+    private final ZapSignService zapSignService;
     private static final Logger logger = LogManager.getLogger();
 
     public ContractResponse save(ContractRequest request) {
@@ -112,6 +114,23 @@ public class ContractService {
             logger.error(e.getMessage());
         }
         return null;
+    }
+
+    public ContractResponse createDigitalDoc(final Long id) {
+        Contract contract = find(id);
+
+        if (contract.getToken() == null) {
+            DocResponse docResponse = zapSignService.generateDocument(contract);
+            contract.setToken(docResponse.getToken());
+        }
+
+        return mapper.toResponse(repository.save(contract));
+    }
+
+    public DocResponse getDocByToken(String token) {
+        DocResponse docResponse = zapSignService.getDocByToken(token);
+
+        return docResponse;
     }
 
     public ContractResponse update(final Long id, final UpdateContractRequest request) {

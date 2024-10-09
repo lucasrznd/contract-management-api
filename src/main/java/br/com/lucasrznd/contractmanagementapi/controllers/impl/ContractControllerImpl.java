@@ -8,6 +8,7 @@ import br.com.lucasrznd.contractmanagementapi.services.ContractService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import response.DocResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -65,6 +66,16 @@ public class ContractControllerImpl implements ContractController {
                 .header(CONTENT_DISPOSITION, "attachment; filename=" + "CONTRATO.pdf")
                 .contentType(APPLICATION_PDF)
                 .body(pdfBytes);
+    }
+
+    @Override
+    public ResponseEntity<ContractResponse> createDigitalDoc(Long id) {
+        return ResponseEntity.ok().body(service.createDigitalDoc(id));
+    }
+
+    @Override
+    public ResponseEntity<DocResponse> getDocByToken(String token) {
+        return ResponseEntity.ok().body(service.getDocByToken(token));
     }
 
     @Override

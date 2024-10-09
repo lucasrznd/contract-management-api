@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import response.DocResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -114,7 +115,27 @@ public interface ContractController {
     })
     @GetMapping("/{id}/pdf")
     ResponseEntity<byte[]> getPDF(@Parameter(description = "Contract id", required = true, example = "1")
-                                          @PathVariable(name = "id") Long id);
+                                  @PathVariable(name = "id") Long id);
+
+    @Operation(summary = "Create digital document with external lib")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Document created"),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = StandardError.class))))
+    })
+    @PutMapping("/{id}/create-doc")
+    ResponseEntity<ContractResponse> createDigitalDoc(@Parameter(description = "Contract id", required = true, example = "1")
+                                                      @PathVariable(name = "id") Long id);
+
+    @Operation(summary = "Get document by token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Document founded"),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = StandardError.class))))
+    })
+    @GetMapping("/get-doc")
+    ResponseEntity<DocResponse> getDocByToken(@Parameter(description = "Doc Token", required = true)
+                                              @RequestParam(name = "token") String token);
 
     @Operation(summary = "Update contract")
     @ApiResponses(value = {

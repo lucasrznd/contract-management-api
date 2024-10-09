@@ -90,6 +90,13 @@
             <type>pom</type>
         </dependency>
 
+        <!-- ZapSign Lib -->
+        <dependency>
+            <groupId>br.com.zapsign</groupId>
+            <artifactId>zapsign_sdk</artifactId>
+            <version>1.0-3</version>
+        </dependency>
+
         <!-- MapStruct -->
         <dependency>
             <groupId>org.mapstruct</groupId>
