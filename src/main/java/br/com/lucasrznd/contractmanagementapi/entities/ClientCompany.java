@@ -44,4 +44,13 @@ public class ClientCompany {
         return sb.toString().toUpperCase();
     }
 
+    public String getFullAddressWithArea() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(streetName).append(", ").append(avenueName).append(", ");
+        sb.append(number).append(", ").append(city).append(", ");
+        sb.append(state).append(", ").append(zipCode);
+
+        return sb.toString().toUpperCase();
+    }
+
 }

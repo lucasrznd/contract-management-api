@@ -41,4 +41,7 @@ public class Contract {
     @Column(columnDefinition = "TEXT")
     private String pdfPath;
 
+    @Column(columnDefinition = "TEXT")
+    private String token;
+
 }
