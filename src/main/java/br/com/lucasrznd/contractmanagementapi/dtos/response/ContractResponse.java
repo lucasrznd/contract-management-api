@@ -20,6 +20,6 @@ public record ContractResponse(Long id,
                                String newspaperParticipation,
                                PaymentMethod paymentMethod,
                                Integer paymentDueDay,
-                               String observation
-) {
+                               String observation,
+                               String token) {
 }

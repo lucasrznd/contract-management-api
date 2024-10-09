@@ -8,8 +8,14 @@ import br.com.lucasrznd.contractmanagementapi.entities.Contract;
 import br.com.lucasrznd.contractmanagementapi.mappers.ContractMapper;
 import br.com.lucasrznd.contractmanagementapi.repositories.ContractRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+import response.DocResponse;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.List;
@@ -20,9 +26,15 @@ public class ContractService {
 
     private final ContractRepository repository;
     private final ContractMapper mapper;
+    private final GeneratePDFService pdfService;
+    private final ZapSignService zapSignService;
+    private static final Logger logger = LogManager.getLogger();
 
     public ContractResponse save(ContractRequest request) {
-        return mapper.toResponse(repository.save(mapper.toEntity(request)));
+        Contract contract = mapper.toEntity(request);
+        contract.setPdfPath(generatePDF(contract));
+
+        return mapper.toResponse(repository.save(contract));
     }
 
     public List<ContractResponse> findAll() {
@@ -68,10 +80,65 @@ public class ContractService {
         return NumberFormat.getCurrencyInstance().format(totalRevenue);
     }
 
+    public byte[] getPDF(final Long id) {
+        try {
+            Contract contract = find(id);
+
+            File file = new File("");
+            if (contract.getPdfPath() != null) {
+                file = new File(contract.getPdfPath());
+            }
+
+            // If the PDF not exists its generated
+            if (!file.exists()) {
+                String pdfPath = pdfService.generatePDF(contract);
+                contract.setPdfPath(pdfPath);
+                repository.save(contract);
+                file = new File(pdfPath);
+            }
+
+            return Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+        return null;
+    }
+
+    public String generatePDF(final Contract contract) {
+        try {
+            String pdfPath = pdfService.generatePDF(contract);
+            contract.setPdfPath(pdfPath);
+
+            return pdfPath;
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+        return null;
+    }
+
+    public ContractResponse createDigitalDoc(final Long id) {
+        Contract contract = find(id);
+
+        if (contract.getToken() == null) {
+            DocResponse docResponse = zapSignService.generateDocument(contract);
+            contract.setToken(docResponse.getToken());
+        }
+
+        return mapper.toResponse(repository.save(contract));
+    }
+
+    public DocResponse getDocByToken(String token) {
+        DocResponse docResponse = zapSignService.getDocByToken(token);
+
+        return docResponse;
+    }
+
     public ContractResponse update(final Long id, final UpdateContractRequest request) {
         Contract entity = find(id);
+        Contract updatedContract = mapper.update(request, entity);
+        updatedContract.setPdfPath(generatePDF(updatedContract));
 
-        return mapper.toResponse(repository.save(mapper.update(request, entity)));
+        return mapper.toResponse(repository.save(updatedContract));
     }
 
     private Contract find(final Long id) {

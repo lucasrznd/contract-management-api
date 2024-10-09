@@ -1,11 +1,7 @@
 package br.com.lucasrznd.contractmanagementapi.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.With;
+import lombok.*;
 
 @Getter
 @Setter
@@ -39,5 +35,22 @@ public class ClientCompany {
     private String city;
     private String state;
     private String zipCode;
+
+    public String getFullAddress() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(streetName).append(", ").append(avenueName).append(", ");
+        sb.append(number).append(", ").append(city);
+
+        return sb.toString().toUpperCase();
+    }
+
+    public String getFullAddressWithArea() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(streetName).append(", ").append(avenueName).append(", ");
+        sb.append(number).append(", ").append(city).append(", ");
+        sb.append(state).append(", ").append(zipCode);
+
+        return sb.toString().toUpperCase();
+    }
 
 }
