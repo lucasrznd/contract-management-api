@@ -27,8 +27,6 @@ public class ZapSignService {
     public DocResponse generateDocument(Contract contract) {
         try {
             DocResponse docResponse = new DocRequests(apiToken).createDocFromTemplate(fillDocTemplate(contract));
-            String jsonDocResponse = new JsonConverter().docResponseToJson(docResponse);
-            System.out.println(jsonDocResponse);
             return docResponse;
         } catch (Exception e) {
             e.printStackTrace();
