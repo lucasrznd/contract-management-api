@@ -28,7 +28,7 @@ import static com.itextpdf.layout.borders.Border.NO_BORDER;
 import static com.itextpdf.layout.properties.TextAlignment.*;
 
 @Service
-public class GeneratePDFService {
+public class PDFService {
 
     @Value("${pdf.target}")
     private String pdfTarget;
