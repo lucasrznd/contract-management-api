@@ -22,7 +22,6 @@ public class ClientCompany {
     @Column(unique = true)
     private String tradeName;
 
-    @Column(unique = true)
     private String registrationNumber;
 
     private String cpf;
