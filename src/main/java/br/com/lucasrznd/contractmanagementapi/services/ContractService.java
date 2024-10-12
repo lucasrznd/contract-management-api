@@ -26,7 +26,7 @@ public class ContractService {
 
     private final ContractRepository repository;
     private final ContractMapper mapper;
-    private final GeneratePDFService pdfService;
+    private final PDFService pdfService;
     private final ZapSignService zapSignService;
     private static final Logger logger = LogManager.getLogger();
 
