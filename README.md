@@ -7,42 +7,48 @@
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 </div>
 
-<h2 id="description">📙 Description</h2>
+<h2 id="description">📙 Descrição</h2>
 
-This **component** is responsible for managing contracts, specifically for radio. The API provides endpoints for registering business companies with their legal data, as well as for registering contracts. The association rule is N:1 from company to contract.
+Esta API é responsável pela gestão de contratos, especificamente para rádio. A API fornece endpoints para o cadastro de empresas comerciais com seus dados jurídicos, bem como para o cadastro de contratos e vendedores. 
 
-<h2 id="features">✨ Features</h2>
+<h2 id="features">✨ Funcionalidades</h2>
 
-- **Business Company Registration**: Endpoints to add and manage clients' companies.
-- **Contract Registration**: Endpoints to add and manage contracts associated with these companies.
+- **Cadastro de Empresas Comerciais**: Endpoints para adicionar e gerenciar empresas clientes.
+- **Cadastro de Vendedores**: Endpoints para adicionar e gerenciar vendedores.
+- **Cadastro de Contratos**: Endpoints para adicionar e gerenciar contratos associados a essas empresas.
 
-<h2 id="installation">🛠️ Installation</h2>
+<h2 id="swagger">📄 Swagger</h2>
 
-1. Clone the repository to your local environment:
+<img src="https://github.com/user-attachments/assets/c050fdb5-f783-48b7-b964-8a1d78895fc9" height="950" />
+
+
+<h2 id="installation">🛠️ Instalação</h2>
+
+1. Clone o repositório para o seu ambiente local:
 
 ```
 git clone https://github.com/lucasrznd/contract-management-api.git
 ```
 
-2. Navigate to the project directory:
+2. Navegue até o diretório do projeto:
 
 ```
 cd contract-management-api
 ```
 
-3. Build the Docker image:
+3. Construa a imagem Docker:
 
 ```
 docker build -t contracts-api .
 ```
 
-5. Start the application using Docker Compose:
+5. Inicie a aplicação usando Docker Compose:
 
 ```
 docker-compose up -d
 ```
 
-<h2 id="author">👨🏻‍💻 Author</h2>
+<h2 id="author">👨🏻‍💻 Autor</h2>
 
 <table>
   <tbody>
