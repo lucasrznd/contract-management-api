@@ -24,7 +24,7 @@ public class Contract {
 
     @ManyToOne
     private Seller seller;
-    private Integer advertisingOrder;
+    private String advertisingOrder;
     private Double spotDuration;
     private int quantitySpotDay;
     private Double testimonialDuration;

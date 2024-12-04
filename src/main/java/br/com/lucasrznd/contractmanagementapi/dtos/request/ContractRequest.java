@@ -21,8 +21,8 @@ public record ContractRequest(
         SellerResponse seller,
 
         @Schema(description = "Advertising order", example = "200")
-        @NotNull(message = "Advertising order cannot be null")
-        Integer advertisingOrder,
+        @Size(max = 50, message = "Advertising order must contain maximum of 50 characters")
+        String advertisingOrder,
 
         @Schema(description = "Spot duration", example = "0.30")
         @NotNull(message = "Spot duration cannot be null")
