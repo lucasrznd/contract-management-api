@@ -49,6 +49,11 @@ public class ContractControllerImpl implements ContractController {
     }
 
     @Override
+    public ResponseEntity<List<ContractResponse>> findByCompanyAndSeller(Long companyId, Long sellerId) {
+        return ResponseEntity.ok().body(service.findByCompanyAndSeller(companyId, sellerId));
+    }
+
+    @Override
     public ResponseEntity<Integer> countContracts() {
         return ResponseEntity.ok().body(service.countContracts());
     }

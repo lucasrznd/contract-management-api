@@ -19,4 +19,6 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
             "AND c.startDate BETWEEN :startDate AND :endDate")
     List<Contract> findByCompanyAndSellerAndDateRange(LocalDate startDate, LocalDate endDate, Long companyId, Long sellerId);
 
+    List<Contract> findByClientCompanyIdAndSellerId(Long companyId, Long sellerId);
+
 }

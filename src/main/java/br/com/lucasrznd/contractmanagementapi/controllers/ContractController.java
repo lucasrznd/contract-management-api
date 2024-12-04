@@ -86,6 +86,19 @@ public interface ContractController {
                                                 @Parameter(description = "Seller Id", example = "1")
                                                 @RequestParam(name = "sellerId", required = false) Long sellerId);
 
+    @Operation(summary = "Find filtered contracts")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contracts found", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = ContractResponse.class)))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping("/find")
+    ResponseEntity<List<ContractResponse>> findByCompanyAndSeller(@Parameter(description = "Company Id", example = "1")
+                                                                  @RequestParam(name = "companyId") Long companyId,
+                                                                  @Parameter(description = "Seller Id", example = "1")
+                                                                  @RequestParam(name = "sellerId") Long sellerId);
+
     @Operation(summary = "Returns quantity of contracts")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Quantity found", content = @Content(

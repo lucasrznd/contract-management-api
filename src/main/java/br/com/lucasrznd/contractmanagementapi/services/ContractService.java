@@ -62,6 +62,11 @@ public class ContractService {
                 .stream().map(mapper::toResponse).toList();
     }
 
+    public List<ContractResponse> findByCompanyAndSeller(Long companyId, Long sellerId) {
+        return repository.findByClientCompanyIdAndSellerId(companyId, sellerId)
+                .stream().map(mapper::toResponse).toList();
+    }
+
     public Integer countContracts() {
         return Math.toIntExact(repository.count());
     }
