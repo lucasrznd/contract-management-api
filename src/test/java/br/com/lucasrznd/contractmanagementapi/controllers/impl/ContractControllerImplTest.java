@@ -3,6 +3,8 @@ package br.com.lucasrznd.contractmanagementapi.controllers.impl;
 import br.com.lucasrznd.contractmanagementapi.config.WebConfig;
 import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.ResourceNotFoundException;
 import br.com.lucasrznd.contractmanagementapi.services.ContractService;
+import br.com.lucasrznd.contractmanagementapi.services.PDFService;
+import br.com.lucasrznd.contractmanagementapi.services.ZapSignService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
@@ -38,6 +40,12 @@ class ContractControllerImplTest {
 
     @MockBean
     private ContractService service;
+
+    @MockBean
+    private PDFService pdfService;
+
+    @MockBean
+    private ZapSignService zapSignService;
 
     @MockBean
     private WebConfig webConfig;

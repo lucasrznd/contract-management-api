@@ -21,5 +21,6 @@ public record ContractResponse(Long id,
                                PaymentMethod paymentMethod,
                                Integer paymentDueDay,
                                String observation,
-                               String token) {
+                               String token,
+                               String pdfPath) {
 }

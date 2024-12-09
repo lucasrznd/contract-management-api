@@ -31,6 +31,12 @@ class ContractServiceTest {
     private ContractRepository repository;
 
     @Mock
+    private PDFService pdfService;
+
+    @Mock
+    private ZapSignService zapSignService;
+
+    @Mock
     private ContractMapper mapper;
 
     @Test
@@ -219,7 +225,7 @@ class ContractServiceTest {
     @Test
     public void getTotalEstimatedRevenue_ReturnsTotalEstimatedRevenue() {
         Contract contract = new Contract(null, null, null, null, 0.30, 1, 0.45, 2, LocalDate.of(2024, 1, 1),
-                LocalDate.of(2024, 3, 1), 600.00, 3, "10 Minutes", null, null, null);
+                LocalDate.of(2024, 3, 1), 600.00, 3, "10 Minutes", null, null, null, null, null);
         when(repository.findAll()).thenReturn(List.of(contract));
 
         String totalRevenue = service.totalEstimatedRevenue();
