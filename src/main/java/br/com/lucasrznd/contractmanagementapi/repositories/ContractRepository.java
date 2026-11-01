@@ -1,7 +1,12 @@
 package br.com.lucasrznd.contractmanagementapi.repositories;
 
 import br.com.lucasrznd.contractmanagementapi.entities.Contract;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -9,7 +14,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface ContractRepository extends JpaRepository<Contract, Long> {
+public interface ContractRepository extends JpaRepository<Contract, Long>, JpaSpecificationExecutor<Contract> {
+
+    /**
+     * Fetches company and seller in the same query, avoiding N+1 selects when listing contracts.
+     */
+    @Override
+    @EntityGraph(attributePaths = {"clientCompany", "seller"})
+    Page<Contract> findAll(Specification<Contract> spec, Pageable pageable);
 
     @Query("SELECT c FROM Contract c ORDER BY c.id DESC LIMIT 5")
     List<Contract> findLastFiveOrderByIdDesc();

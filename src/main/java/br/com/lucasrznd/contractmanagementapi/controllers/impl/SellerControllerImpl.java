@@ -25,8 +25,8 @@ public class SellerControllerImpl implements SellerController {
     }
 
     @Override
-    public ResponseEntity<Page<SellerResponse>> findAll(Pageable pageable) {
-        return ResponseEntity.ok().body(service.findAll(pageable));
+    public ResponseEntity<Page<SellerResponse>> findAll(String text, Pageable pageable) {
+        return ResponseEntity.ok().body(service.findAll(text, pageable));
     }
 
     @Override

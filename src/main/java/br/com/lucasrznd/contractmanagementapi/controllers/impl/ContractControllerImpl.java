@@ -31,8 +31,8 @@ public class ContractControllerImpl implements ContractController {
     }
 
     @Override
-    public ResponseEntity<Page<ContractResponse>> findAll(Pageable pageable) {
-        return ResponseEntity.ok().body(service.findAll(pageable));
+    public ResponseEntity<Page<ContractResponse>> findAll(String text, Pageable pageable) {
+        return ResponseEntity.ok().body(service.findAll(text, pageable));
     }
 
     @Override

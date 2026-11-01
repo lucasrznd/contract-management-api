@@ -19,6 +19,7 @@ import java.util.List;
 import static br.com.lucasrznd.contractmanagementapi.common.SellerConstants.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -80,7 +81,7 @@ class SellerControllerImplTest {
     @Test
     public void listSellers_ReturnsPagedSellers() throws Exception {
         var pageable = PageRequest.of(0, 10);
-        when(service.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(SELLER_RESPONSE), pageable, 1));
+        when(service.findAll(isNull(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(SELLER_RESPONSE), pageable, 1));
 
         mockMvc.perform(get("/sellers"))
                 .andExpect(status().isOk())
@@ -93,12 +94,23 @@ class SellerControllerImplTest {
 
     @Test
     public void listSellers_WithPageParams_PassesPageableToService() throws Exception {
-        when(service.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
+        when(service.findAll(isNull(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
 
         mockMvc.perform(get("/sellers").param("page", "2").param("size", "5").param("sort", "name,desc"))
                 .andExpect(status().isOk());
 
-        verify(service).findAll(PageRequest.of(2, 5, Sort.by("name").descending()));
+        verify(service).findAll(null, PageRequest.of(2, 5, Sort.by("name").descending()));
+    }
+
+    @Test
+    public void listSellers_WithText_PassesTextToService() throws Exception {
+        when(service.findAll(any(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(SELLER_RESPONSE)));
+
+        mockMvc.perform(get("/sellers").param("text", "joão"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)));
+
+        verify(service).findAll("joão", PageRequest.of(0, 10, Sort.by("id")));
     }
 
     @Test

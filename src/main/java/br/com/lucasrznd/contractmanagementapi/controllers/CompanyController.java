@@ -48,7 +48,9 @@ public interface CompanyController {
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping
-    ResponseEntity<Page<CompanyResponse>> findAll(@ParameterObject @PageableDefault(sort = "id") Pageable pageable);
+    ResponseEntity<Page<CompanyResponse>> findAll(@Parameter(description = "Text to search by business name, trade name, CNPJ, CPF or city (case and accent insensitive)")
+                                          @RequestParam(name = "text", required = false) String text,
+                                          @ParameterObject @PageableDefault(sort = "id") Pageable pageable);
 
     @Operation(summary = "Returns quantity of companies")
     @ApiResponses(value = {

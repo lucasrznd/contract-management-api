@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import static br.com.lucasrznd.contractmanagementapi.common.SellerConstants.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -90,15 +92,15 @@ class SellerServiceTest {
     @Test
     public void listSellers_ReturnsPagedSellers() {
         var pageable = PageRequest.of(0, 10);
-        when(repository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(SELLER_ENTITY), pageable, 1));
+        when(repository.findAll(any(Specification.class), eq(pageable))).thenReturn(new PageImpl<>(List.of(SELLER_ENTITY), pageable, 1));
         when(mapper.toResponse(SELLER_ENTITY)).thenReturn(SELLER_RESPONSE);
 
-        var sellersPage = service.findAll(pageable);
+        var sellersPage = service.findAll("lucas", pageable);
 
         assertThat(sellersPage).isNotNull();
         assertThat(sellersPage.getContent()).containsExactly(SELLER_RESPONSE);
         assertThat(sellersPage.getTotalElements()).isEqualTo(1);
-        verify(repository).findAll(pageable);
+        verify(repository).findAll(any(Specification.class), eq(pageable));
         verify(mapper).toResponse(any(Seller.class));
     }
 
@@ -108,7 +110,7 @@ class SellerServiceTest {
 
         assertThatCode(() -> service.delete(1L)).doesNotThrowAnyException();
         verify(repository).findById(1L);
-        verify(repository).delete(any());
+        verify(repository).delete(any(Seller.class));
     }
 
     @Test
@@ -116,7 +118,7 @@ class SellerServiceTest {
         assertThatCode(() -> service.delete(1L)).isInstanceOf(ResourceNotFoundException.class);
 
         verify(repository).findById(1L);
-        verify(repository, times(0)).delete(any());
+        verify(repository, times(0)).delete(any(Seller.class));
     }
 
 }

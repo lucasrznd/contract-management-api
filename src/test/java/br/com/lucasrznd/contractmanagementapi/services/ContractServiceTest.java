@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import static br.com.lucasrznd.contractmanagementapi.common.ContractConstants.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -159,15 +161,15 @@ class ContractServiceTest {
     @Test
     public void listContracts_ReturnsPagedContracts() {
         var pageable = PageRequest.of(0, 10);
-        when(repository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(CONTRACT_ENTITY), pageable, 1));
+        when(repository.findAll(any(Specification.class), eq(pageable))).thenReturn(new PageImpl<>(List.of(CONTRACT_ENTITY), pageable, 1));
         when(mapper.toResponse(CONTRACT_ENTITY)).thenReturn(CONTRACT_RESPONSE);
 
-        var contractsPage = service.findAll(pageable);
+        var contractsPage = service.findAll("text", pageable);
 
         assertThat(contractsPage).isNotNull();
         assertThat(contractsPage.getContent()).containsExactly(CONTRACT_RESPONSE);
         assertThat(contractsPage.getTotalElements()).isEqualTo(1);
-        verify(repository).findAll(pageable);
+        verify(repository).findAll(any(Specification.class), eq(pageable));
         verify(mapper).toResponse(CONTRACT_ENTITY);
     }
 
@@ -243,7 +245,7 @@ class ContractServiceTest {
 
         assertThatCode(() -> service.delete(1L)).doesNotThrowAnyException();
         verify(repository).findById(1L);
-        verify(repository).delete(any());
+        verify(repository).delete(any(Contract.class));
     }
 
     @Test
@@ -251,7 +253,7 @@ class ContractServiceTest {
         assertThatCode(() -> service.delete(1L)).isInstanceOf(ResourceNotFoundException.class);
 
         verify(repository).findById(1L);
-        verify(repository, times(0)).delete(any());
+        verify(repository, times(0)).delete(any(Contract.class));
     }
 
 }
