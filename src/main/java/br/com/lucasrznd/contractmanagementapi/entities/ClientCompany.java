@@ -35,6 +35,12 @@ public class ClientCompany {
     private String state;
     private String zipCode;
 
+    /**
+     * Object storage key of the company image.
+     */
+    @Column(columnDefinition = "TEXT")
+    private String imageKey;
+
     public String getFullAddress() {
         StringBuilder sb = new StringBuilder();
         sb.append(streetName).append(", ").append(avenueName).append(", ");

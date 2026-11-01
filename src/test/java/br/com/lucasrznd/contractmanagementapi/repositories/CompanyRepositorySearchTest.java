@@ -84,7 +84,7 @@ class CompanyRepositorySearchTest extends AbstractPostgresRepositoryTest {
 
     private static ClientCompany company(String businessName, String tradeName, String cnpj, String cpf, String city, String email) {
         return new ClientCompany(null, businessName, tradeName, cnpj, cpf, null, null, email,
-                "Rua Principal", "Centro", 100, city, "Parana", "86400000");
+                "Rua Principal", "Centro", 100, city, "Parana", "86400000", null);
     }
 
 }

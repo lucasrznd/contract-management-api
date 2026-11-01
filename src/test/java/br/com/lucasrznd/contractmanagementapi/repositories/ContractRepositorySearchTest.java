@@ -114,7 +114,7 @@ class ContractRepositorySearchTest extends AbstractPostgresRepositoryTest {
 
     private static ClientCompany company(String businessName, String tradeName) {
         return new ClientCompany(null, businessName, tradeName, null, null, null, null, null,
-                null, null, null, "Jacarezinho", "Parana", null);
+                null, null, null, "Jacarezinho", "Parana", null, null);
     }
 
     private static Contract contract(ClientCompany company, Seller seller, String advertisingOrder) {

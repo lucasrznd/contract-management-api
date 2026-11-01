@@ -6,7 +6,8 @@ package br.com.lucasrznd.contractmanagementapi.storage;
  */
 public enum StorageFolder {
 
-    SELLER_IMAGES("images/sellers");
+    SELLER_IMAGES("images/sellers"),
+    COMPANY_IMAGES("images/companies");
 
     private final String prefix;
 
