@@ -1,5 +1,6 @@
-package br.com.lucasrznd.contractmanagementapi.storage;
+package br.com.lucasrznd.contractmanagementapi.services.storage;
 
+import br.com.lucasrznd.contractmanagementapi.config.S3StorageConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;

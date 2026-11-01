@@ -7,14 +7,14 @@ import br.com.lucasrznd.contractmanagementapi.dtos.response.SellerResponse;
 import br.com.lucasrznd.contractmanagementapi.entities.Seller;
 import br.com.lucasrznd.contractmanagementapi.mappers.SellerMapper;
 import br.com.lucasrznd.contractmanagementapi.repositories.SellerRepository;
+import br.com.lucasrznd.contractmanagementapi.services.storage.StorageService;
 import br.com.lucasrznd.contractmanagementapi.specifications.TextSearchSpecification;
-import br.com.lucasrznd.contractmanagementapi.storage.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import static br.com.lucasrznd.contractmanagementapi.storage.StorageFolder.SELLER_IMAGES;
+import static br.com.lucasrznd.contractmanagementapi.services.storage.StorageFolder.SELLER_IMAGES;
 
 @Service
 @RequiredArgsConstructor

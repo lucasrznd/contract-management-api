@@ -1,4 +1,4 @@
-package br.com.lucasrznd.contractmanagementapi.storage.validation;
+package br.com.lucasrznd.contractmanagementapi.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

@@ -2,10 +2,10 @@ package br.com.lucasrznd.contractmanagementapi.controllers.impl;
 
 import br.com.lucasrznd.contractmanagementapi.config.WebConfig;
 import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.ResourceNotFoundException;
+import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.StorageException;
 import br.com.lucasrznd.contractmanagementapi.dtos.request.SellerRequest;
 import br.com.lucasrznd.contractmanagementapi.dtos.request.UpdateSellerRequest;
 import br.com.lucasrznd.contractmanagementapi.services.SellerService;
-import br.com.lucasrznd.contractmanagementapi.storage.StorageException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;

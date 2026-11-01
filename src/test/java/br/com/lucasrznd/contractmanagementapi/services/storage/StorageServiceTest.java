@@ -1,5 +1,6 @@
-package br.com.lucasrznd.contractmanagementapi.storage;
+package br.com.lucasrznd.contractmanagementapi.services.storage;
 
+import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.StorageException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
@@ -7,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
-import static br.com.lucasrznd.contractmanagementapi.storage.StorageFolder.SELLER_IMAGES;
+import static br.com.lucasrznd.contractmanagementapi.services.storage.StorageFolder.SELLER_IMAGES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

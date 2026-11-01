@@ -1,5 +1,6 @@
-package br.com.lucasrznd.contractmanagementapi.storage;
+package br.com.lucasrznd.contractmanagementapi.config;
 
+import br.com.lucasrznd.contractmanagementapi.services.storage.StorageProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

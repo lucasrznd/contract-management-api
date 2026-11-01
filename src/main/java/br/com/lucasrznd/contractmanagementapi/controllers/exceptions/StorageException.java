@@ -1,4 +1,4 @@
-package br.com.lucasrznd.contractmanagementapi.storage;
+package br.com.lucasrznd.contractmanagementapi.controllers.exceptions;
 
 public class StorageException extends RuntimeException {
 

@@ -2,8 +2,8 @@ package br.com.lucasrznd.contractmanagementapi.controllers.exceptions.handler;
 
 import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.ResourceNotFoundException;
 import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.StandardError;
+import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.StorageException;
 import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.ValidationException;
-import br.com.lucasrznd.contractmanagementapi.storage.StorageException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

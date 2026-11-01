@@ -1,11 +1,11 @@
 package br.com.lucasrznd.contractmanagementapi.services;
 
 import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.ResourceNotFoundException;
+import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.StorageException;
 import br.com.lucasrznd.contractmanagementapi.entities.Seller;
 import br.com.lucasrznd.contractmanagementapi.mappers.SellerMapper;
 import br.com.lucasrznd.contractmanagementapi.repositories.SellerRepository;
-import br.com.lucasrznd.contractmanagementapi.storage.StorageException;
-import br.com.lucasrznd.contractmanagementapi.storage.StorageService;
+import br.com.lucasrznd.contractmanagementapi.services.storage.StorageService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static br.com.lucasrznd.contractmanagementapi.common.SellerConstants.*;
-import static br.com.lucasrznd.contractmanagementapi.storage.StorageFolder.SELLER_IMAGES;
+import static br.com.lucasrznd.contractmanagementapi.services.storage.StorageFolder.SELLER_IMAGES;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

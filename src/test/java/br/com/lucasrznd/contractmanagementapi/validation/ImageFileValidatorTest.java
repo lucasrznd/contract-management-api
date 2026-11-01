@@ -1,4 +1,4 @@
-package br.com.lucasrznd.contractmanagementapi.storage.validation;
+package br.com.lucasrznd.contractmanagementapi.validation;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;

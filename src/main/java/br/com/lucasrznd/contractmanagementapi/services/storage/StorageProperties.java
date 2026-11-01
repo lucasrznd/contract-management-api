@@ -1,4 +1,4 @@
-package br.com.lucasrznd.contractmanagementapi.storage;
+package br.com.lucasrznd.contractmanagementapi.services.storage;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;

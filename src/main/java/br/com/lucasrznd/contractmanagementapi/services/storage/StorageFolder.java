@@ -1,4 +1,4 @@
-package br.com.lucasrznd.contractmanagementapi.storage;
+package br.com.lucasrznd.contractmanagementapi.services.storage;
 
 /**
  * Folders (key prefixes) inside the bucket. Every domain stores its files under its own folder,

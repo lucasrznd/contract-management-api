@@ -1,4 +1,4 @@
-package br.com.lucasrznd.contractmanagementapi.storage;
+package br.com.lucasrznd.contractmanagementapi.services.storage;
 
 import org.apache.logging.log4j.LogManager;
 import org.springframework.web.multipart.MultipartFile;

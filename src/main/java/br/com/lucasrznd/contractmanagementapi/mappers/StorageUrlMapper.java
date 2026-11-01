@@ -1,6 +1,6 @@
 package br.com.lucasrznd.contractmanagementapi.mappers;
 
-import br.com.lucasrznd.contractmanagementapi.storage.StorageService;
+import br.com.lucasrznd.contractmanagementapi.services.storage.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
