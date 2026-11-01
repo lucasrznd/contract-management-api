@@ -66,9 +66,9 @@ class S3StorageServiceTest {
         var content = "fake-png-content".getBytes();
         var file = new MockMultipartFile("image", "Photo.PNG", "image/png", content);
 
-        var key = service.upload(file, "sellers");
+        var key = service.upload(file, StorageFolder.SELLER_IMAGES);
 
-        assertThat(key).startsWith("sellers/").endsWith(".png");
+        assertThat(key).startsWith("images/sellers/").endsWith(".png");
         var response = HttpClient.newHttpClient().send(
                 HttpRequest.newBuilder(URI.create(service.getUrl(key))).build(), HttpResponse.BodyHandlers.ofByteArray());
         assertThat(response.statusCode()).isEqualTo(200);
@@ -78,7 +78,7 @@ class S3StorageServiceTest {
 
     @Test
     public void delete_WithExistingKey_RemovesObject() {
-        var key = service.upload(new MockMultipartFile("image", "photo.png", "image/png", new byte[]{1, 2, 3}), "sellers");
+        var key = service.upload(new MockMultipartFile("image", "photo.png", "image/png", new byte[]{1, 2, 3}), StorageFolder.SELLER_IMAGES);
 
         service.delete(key);
 

@@ -11,9 +11,9 @@ public interface StorageService {
     /**
      * Uploads the file under the given folder.
      *
-     * @return the generated object key (e.g. {@code sellers/1f0c...png}), to be persisted by the caller
+     * @return the generated object key (e.g. {@code images/sellers/1f0c...png}), to be persisted by the caller
      */
-    String upload(MultipartFile file, String folder);
+    String upload(MultipartFile file, StorageFolder folder);
 
     /**
      * Deletes the object. Does nothing for blank keys or legacy external URLs.

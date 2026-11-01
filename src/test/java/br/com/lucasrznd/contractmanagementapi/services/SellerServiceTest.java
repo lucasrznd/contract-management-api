@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static br.com.lucasrznd.contractmanagementapi.common.SellerConstants.*;
+import static br.com.lucasrznd.contractmanagementapi.storage.StorageFolder.SELLER_IMAGES;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SellerServiceTest {
 
-    private static final String NEW_IMAGE_KEY = "sellers/new-image.png";
+    private static final String NEW_IMAGE_KEY = "images/sellers/new-image.png";
 
     @InjectMocks
     private SellerService service;
@@ -63,7 +64,7 @@ class SellerServiceTest {
         var request = SELLER_REQUEST.withImage(SELLER_IMAGE);
         var seller = newSeller(null);
         when(mapper.toEntity(request)).thenReturn(seller);
-        when(storageService.upload(SELLER_IMAGE, "sellers")).thenReturn(IMAGE_KEY);
+        when(storageService.upload(SELLER_IMAGE, SELLER_IMAGES)).thenReturn(IMAGE_KEY);
         when(repository.save(seller)).thenReturn(seller);
         when(mapper.toResponse(seller)).thenReturn(SELLER_RESPONSE);
 
@@ -71,7 +72,7 @@ class SellerServiceTest {
 
         assertThat(savedSeller).isEqualTo(SELLER_RESPONSE);
         assertThat(seller.getImageKey()).isEqualTo(IMAGE_KEY);
-        verify(storageService).upload(SELLER_IMAGE, "sellers");
+        verify(storageService).upload(SELLER_IMAGE, SELLER_IMAGES);
     }
 
     @Test
@@ -79,7 +80,7 @@ class SellerServiceTest {
         var request = SELLER_REQUEST.withImage(SELLER_IMAGE);
         var seller = newSeller(null);
         when(mapper.toEntity(request)).thenReturn(seller);
-        when(storageService.upload(SELLER_IMAGE, "sellers")).thenReturn(IMAGE_KEY);
+        when(storageService.upload(SELLER_IMAGE, SELLER_IMAGES)).thenReturn(IMAGE_KEY);
         when(repository.save(seller)).thenThrow(DataIntegrityViolationException.class);
 
         assertThatThrownBy(() -> service.save(request)).isInstanceOf(DataIntegrityViolationException.class);
@@ -91,7 +92,7 @@ class SellerServiceTest {
     public void saveSeller_WithStorageFailure_DoesNotSaveSeller() {
         var request = SELLER_REQUEST.withImage(SELLER_IMAGE);
         when(mapper.toEntity(request)).thenReturn(newSeller(null));
-        when(storageService.upload(SELLER_IMAGE, "sellers")).thenThrow(StorageException.class);
+        when(storageService.upload(SELLER_IMAGE, SELLER_IMAGES)).thenThrow(StorageException.class);
 
         assertThatThrownBy(() -> service.save(request)).isInstanceOf(StorageException.class);
         verify(repository, times(0)).save(any());
@@ -159,7 +160,7 @@ class SellerServiceTest {
         var seller = newSeller(IMAGE_KEY);
         when(repository.findById(1L)).thenReturn(Optional.of(seller));
         when(mapper.update(request, seller)).thenReturn(seller);
-        when(storageService.upload(SELLER_IMAGE, "sellers")).thenReturn(NEW_IMAGE_KEY);
+        when(storageService.upload(SELLER_IMAGE, SELLER_IMAGES)).thenReturn(NEW_IMAGE_KEY);
         when(repository.save(seller)).thenReturn(seller);
         when(mapper.toResponse(seller)).thenReturn(SELLER_RESPONSE);
 
@@ -176,7 +177,7 @@ class SellerServiceTest {
         var seller = newSeller(IMAGE_KEY);
         when(repository.findById(1L)).thenReturn(Optional.of(seller));
         when(mapper.update(request, seller)).thenReturn(seller);
-        when(storageService.upload(SELLER_IMAGE, "sellers")).thenReturn(NEW_IMAGE_KEY);
+        when(storageService.upload(SELLER_IMAGE, SELLER_IMAGES)).thenReturn(NEW_IMAGE_KEY);
         when(repository.save(seller)).thenReturn(seller);
         when(mapper.toResponse(seller)).thenReturn(SELLER_RESPONSE);
         doThrow(StorageException.class).when(storageService).delete(IMAGE_KEY);
@@ -190,7 +191,7 @@ class SellerServiceTest {
         var seller = newSeller(IMAGE_KEY);
         when(repository.findById(1L)).thenReturn(Optional.of(seller));
         when(mapper.update(request, seller)).thenReturn(seller);
-        when(storageService.upload(SELLER_IMAGE, "sellers")).thenReturn(NEW_IMAGE_KEY);
+        when(storageService.upload(SELLER_IMAGE, SELLER_IMAGES)).thenReturn(NEW_IMAGE_KEY);
         when(repository.save(seller)).thenThrow(DataIntegrityViolationException.class);
 
         assertThatThrownBy(() -> service.update(1L, request)).isInstanceOf(DataIntegrityViolationException.class);

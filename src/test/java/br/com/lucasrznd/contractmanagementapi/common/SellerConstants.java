@@ -8,7 +8,7 @@ import org.springframework.mock.web.MockMultipartFile;
 
 public class SellerConstants {
 
-    public static final String IMAGE_KEY = "sellers/7c9e6679-7425-40de-944b-e07fc1f90ae7.png";
+    public static final String IMAGE_KEY = "images/sellers/7c9e6679-7425-40de-944b-e07fc1f90ae7.png";
 
     public static final String IMAGE_URL = "http://localhost:8333/contract-management/" + IMAGE_KEY + "?X-Amz-Signature=abc";
 

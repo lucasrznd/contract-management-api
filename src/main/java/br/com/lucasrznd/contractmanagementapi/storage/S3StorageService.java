@@ -47,8 +47,8 @@ public class S3StorageService implements StorageService {
     }
 
     @Override
-    public String upload(MultipartFile file, String folder) {
-        String key = folder + "/" + UUID.randomUUID() + extension(file);
+    public String upload(MultipartFile file, StorageFolder folder) {
+        String key = folder.prefix() + "/" + UUID.randomUUID() + extension(file);
 
         try (InputStream content = file.getInputStream()) {
             s3Client.putObject(request -> request.bucket(properties.bucket()).key(key).contentType(file.getContentType()),

@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import static br.com.lucasrznd.contractmanagementapi.storage.StorageFolder.SELLER_IMAGES;
+
 @Service
 @RequiredArgsConstructor
 public class SellerService {
@@ -25,11 +27,6 @@ public class SellerService {
      * Fields used by the text search. Each one must have a trigram index (see db/migration).
      */
     private static final String[] SEARCH_FIELDS = {"name", "phoneNumber"};
-
-    /**
-     * Storage folder of the seller images.
-     */
-    private static final String IMAGE_FOLDER = "sellers";
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -87,7 +84,7 @@ public class SellerService {
         if (image == null || image.isEmpty()) {
             return null;
         }
-        return storageService.upload(image, IMAGE_FOLDER);
+        return storageService.upload(image, SELLER_IMAGES);
     }
 
     /**
