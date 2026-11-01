@@ -9,6 +9,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -21,7 +25,9 @@ import java.util.List;
 
 import static br.com.lucasrznd.contractmanagementapi.common.ContractConstants.*;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -87,12 +93,26 @@ class ContractControllerImplTest {
     }
 
     @Test
-    public void listContracts_ReturnsContracts() throws Exception {
-        when(service.findAll()).thenReturn(List.of(CONTRACT_RESPONSE));
+    public void listContracts_ReturnsPagedContracts() throws Exception {
+        var pageable = PageRequest.of(0, 10);
+        when(service.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(CONTRACT_RESPONSE), pageable, 1));
 
         mockMvc.perform(get("/contracts"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.page.totalElements").value(1))
+                .andExpect(jsonPath("$.page.number").value(0))
+                .andExpect(jsonPath("$.page.size").value(10));
+    }
+
+    @Test
+    public void listContracts_WithPageParams_PassesPageableToService() throws Exception {
+        when(service.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
+
+        mockMvc.perform(get("/contracts").param("page", "2").param("size", "5").param("sort", "id,desc"))
+                .andExpect(status().isOk());
+
+        verify(service).findAll(PageRequest.of(2, 5, Sort.by("id").descending()));
     }
 
     @Test

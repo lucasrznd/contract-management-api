@@ -13,6 +13,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import response.DocResponse;
@@ -39,15 +43,15 @@ public interface ContractController {
     @PostMapping
     ResponseEntity<ContractResponse> save(@RequestBody @Valid final ContractRequest request);
 
-    @Operation(summary = "Find all contracts")
+    @Operation(summary = "Find all contracts (paginated)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Contracts found", content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = ContractResponse.class)))),
+                    mediaType = APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping
-    ResponseEntity<List<ContractResponse>> findAll();
+    ResponseEntity<Page<ContractResponse>> findAll(@ParameterObject @PageableDefault(sort = "id") Pageable pageable);
 
     @Operation(summary = "Find contracts that will expire in 7 days")
     @ApiResponses(value = {

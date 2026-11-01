@@ -10,6 +10,8 @@ import br.com.lucasrznd.contractmanagementapi.repositories.ContractRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import response.DocResponse;
 
@@ -37,8 +39,8 @@ public class ContractService {
         return mapper.toResponse(repository.save(contract));
     }
 
-    public List<ContractResponse> findAll() {
-        return repository.findAll().stream().map(mapper::toResponse).toList();
+    public Page<ContractResponse> findAll(final Pageable pageable) {
+        return repository.findAll(pageable).map(mapper::toResponse);
     }
 
     public List<ContractResponse> findAllByExpirationNextWeek() {
