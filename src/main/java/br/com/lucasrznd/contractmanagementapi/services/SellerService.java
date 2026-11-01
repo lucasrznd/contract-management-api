@@ -8,9 +8,9 @@ import br.com.lucasrznd.contractmanagementapi.entities.Seller;
 import br.com.lucasrznd.contractmanagementapi.mappers.SellerMapper;
 import br.com.lucasrznd.contractmanagementapi.repositories.SellerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +23,8 @@ public class SellerService {
         return mapper.toResponse(repository.save(mapper.toEntity(request)));
     }
 
-    public List<SellerResponse> findAll() {
-        return repository.findAll().stream().map(mapper::toResponse).toList();
+    public Page<SellerResponse> findAll(final Pageable pageable) {
+        return repository.findAll(pageable).map(mapper::toResponse);
     }
 
     public SellerResponse update(final Long id, final UpdateSellerRequest request) {

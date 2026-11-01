@@ -13,10 +13,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -36,15 +38,15 @@ public interface SellerController {
     @PostMapping
     ResponseEntity<SellerResponse> save(@RequestBody @Valid final SellerRequest request);
 
-    @Operation(summary = "Find all sellers")
+    @Operation(summary = "Find all sellers (paginated)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Sellers found", content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = SellerResponse.class)))),
+                    mediaType = APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping
-    ResponseEntity<List<SellerResponse>> findAll();
+    ResponseEntity<Page<SellerResponse>> findAll(@ParameterObject @PageableDefault(sort = "id") Pageable pageable);
 
     @Operation(summary = "Update seller")
     @ApiResponses(value = {
