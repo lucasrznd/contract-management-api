@@ -10,12 +10,9 @@ import br.com.lucasrznd.contractmanagementapi.repositories.ClientCompanyReposito
 import br.com.lucasrznd.contractmanagementapi.specifications.TextSearchSpecification;
 import br.com.lucasrznd.contractmanagementapi.storage.StorageService;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import static br.com.lucasrznd.contractmanagementapi.storage.StorageFolder.COMPANY_IMAGES;
 
@@ -28,18 +25,16 @@ public class CompanyService {
      */
     private static final String[] SEARCH_FIELDS = {"businessName", "tradeName", "registrationNumber", "cpf", "city"};
 
-    private static final Logger logger = LogManager.getLogger();
-
     private final ClientCompanyRepository repository;
     private final CompanyMapper mapper;
     private final StorageService storageService;
 
     public CompanyResponse save(CompanyRequest request) {
         ClientCompany company = mapper.toEntity(request);
-        String imageKey = uploadImage(request.image());
+        String imageKey = storageService.uploadIfPresent(request.image(), COMPANY_IMAGES);
         company.setImageKey(imageKey);
 
-        return mapper.toResponse(saveOrDiscardImage(company, imageKey));
+        return mapper.toResponse(storageService.discardOnFailure(imageKey, () -> repository.save(company)));
     }
 
     public Page<CompanyResponse> findAll(final String text, final Pageable pageable) {
@@ -59,14 +54,14 @@ public class CompanyService {
         String oldImageKey = entity.getImageKey();
 
         ClientCompany updatedCompany = mapper.update(request, entity);
-        String newImageKey = uploadImage(request.image());
+        String newImageKey = storageService.uploadIfPresent(request.image(), COMPANY_IMAGES);
         if (newImageKey == null) {
             return mapper.toResponse(repository.save(updatedCompany));
         }
 
         updatedCompany.setImageKey(newImageKey);
-        CompanyResponse response = mapper.toResponse(saveOrDiscardImage(updatedCompany, newImageKey));
-        deleteImageQuietly(oldImageKey);
+        CompanyResponse response = mapper.toResponse(storageService.discardOnFailure(newImageKey, () -> repository.save(updatedCompany)));
+        storageService.deleteQuietly(oldImageKey);
 
         return response;
     }
@@ -81,41 +76,7 @@ public class CompanyService {
                 .orElseThrow(() -> new ResourceNotFoundException("Object not found. Id: " + id + ", Type: " + CompanyResponse.class.getSimpleName()));
 
         repository.delete(company);
-        deleteImageQuietly(company.getImageKey());
-    }
-
-    private String uploadImage(final MultipartFile image) {
-        if (image == null || image.isEmpty()) {
-            return null;
-        }
-        return storageService.upload(image, COMPANY_IMAGES);
-    }
-
-    /**
-     * Saves the company; if it fails, removes the just uploaded image so no orphan object is left in the storage.
-     */
-    private ClientCompany saveOrDiscardImage(final ClientCompany company, final String uploadedImageKey) {
-        try {
-            return repository.save(company);
-        } catch (RuntimeException e) {
-            deleteImageQuietly(uploadedImageKey);
-            throw e;
-        }
-    }
-
-    /**
-     * Image cleanup must never fail the company operation; an orphan object is preferable to a failed request.
-     */
-    private void deleteImageQuietly(final String imageKey) {
-        if (imageKey == null) {
-            return;
-        }
-
-        try {
-            storageService.delete(imageKey);
-        } catch (RuntimeException e) {
-            logger.warn("Could not delete company image {}: {}", imageKey, e.getMessage());
-        }
+        storageService.deleteQuietly(company.getImageKey());
     }
 
 }

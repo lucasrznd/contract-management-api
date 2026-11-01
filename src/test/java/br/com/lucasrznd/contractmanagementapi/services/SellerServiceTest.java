@@ -8,6 +8,7 @@ import br.com.lucasrznd.contractmanagementapi.storage.StorageException;
 import br.com.lucasrznd.contractmanagementapi.storage.StorageService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -40,7 +41,10 @@ class SellerServiceTest {
     @Mock
     private SellerMapper mapper;
 
-    @Mock
+    /**
+     * Real default methods (upload workflow) on top of the mocked provider primitives.
+     */
+    @Mock(answer = Answers.CALLS_REAL_METHODS)
     private StorageService storageService;
 
     @Test
@@ -56,7 +60,7 @@ class SellerServiceTest {
         assertThat(seller.getImageKey()).isNull();
         verify(mapper).toEntity(SELLER_REQUEST);
         verify(repository).save(any(Seller.class));
-        verifyNoInteractions(storageService);
+        verifyNoStorageChanges();
     }
 
     @Test
@@ -151,7 +155,7 @@ class SellerServiceTest {
         assertThat(UPDATED_ENTITY.getImageKey()).isEqualTo(IMAGE_KEY);
         verify(mapper).update(UPDATE_SELLER_REQUEST, SELLER_ENTITY);
         verify(repository).save(UPDATED_ENTITY);
-        verifyNoInteractions(storageService);
+        verifyNoStorageChanges();
     }
 
     @Test
@@ -204,7 +208,7 @@ class SellerServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.update(1L, UPDATE_SELLER_REQUEST)).isInstanceOf(ResourceNotFoundException.class);
-        verifyNoInteractions(storageService);
+        verifyNoStorageChanges();
     }
 
     @Test
@@ -238,7 +242,7 @@ class SellerServiceTest {
         doThrow(DataIntegrityViolationException.class).when(repository).delete(SELLER_ENTITY);
 
         assertThatThrownBy(() -> service.delete(1L)).isInstanceOf(DataIntegrityViolationException.class);
-        verifyNoInteractions(storageService);
+        verifyNoStorageChanges();
     }
 
     @Test
@@ -247,7 +251,7 @@ class SellerServiceTest {
 
         verify(repository).findById(1L);
         verify(repository, times(0)).delete(any(Seller.class));
-        verifyNoInteractions(storageService);
+        verifyNoStorageChanges();
     }
 
     /**
@@ -255,6 +259,11 @@ class SellerServiceTest {
      */
     private static Seller newSeller(final String imageKey) {
         return new Seller(SELLER_ENTITY.getId(), SELLER_ENTITY.getName(), SELLER_ENTITY.getPhoneNumber(), imageKey);
+    }
+
+    private void verifyNoStorageChanges() {
+        verify(storageService, never()).upload(any(), any());
+        verify(storageService, never()).delete(any());
     }
 
 }

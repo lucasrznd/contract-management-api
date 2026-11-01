@@ -8,6 +8,7 @@ import br.com.lucasrznd.contractmanagementapi.storage.StorageException;
 import br.com.lucasrznd.contractmanagementapi.storage.StorageService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -40,7 +41,10 @@ class CompanyServiceTest {
     @Mock
     private CompanyMapper mapper;
 
-    @Mock
+    /**
+     * Real default methods (upload workflow) on top of the mocked provider primitives.
+     */
+    @Mock(answer = Answers.CALLS_REAL_METHODS)
     private StorageService storageService;
 
     @Test
@@ -56,7 +60,7 @@ class CompanyServiceTest {
         assertThat(company.getImageKey()).isNull();
         verify(mapper).toEntity(COMPANY_REQUEST);
         verify(repository).save(any(ClientCompany.class));
-        verifyNoInteractions(storageService);
+        verifyNoStorageChanges();
     }
 
     @Test
@@ -231,7 +235,7 @@ class CompanyServiceTest {
         assertThat(UPDATED_ENTITY.getImageKey()).isEqualTo(COMPANY_IMAGE_KEY);
         verify(mapper).update(UPDATE_COMPANY_REQUEST, COMPANY_ENTITY);
         verify(repository).save(UPDATED_ENTITY);
-        verifyNoInteractions(storageService);
+        verifyNoStorageChanges();
     }
 
     @Test
@@ -325,7 +329,7 @@ class CompanyServiceTest {
         doThrow(DataIntegrityViolationException.class).when(repository).delete(COMPANY_ENTITY);
 
         assertThatThrownBy(() -> service.delete(1L)).isInstanceOf(DataIntegrityViolationException.class);
-        verifyNoInteractions(storageService);
+        verifyNoStorageChanges();
     }
 
     @Test
@@ -334,7 +338,7 @@ class CompanyServiceTest {
 
         verify(repository).findById(1L);
         verify(repository, times(0)).delete(any(ClientCompany.class));
-        verifyNoInteractions(storageService);
+        verifyNoStorageChanges();
     }
 
     /**
@@ -345,6 +349,11 @@ class CompanyServiceTest {
         return new ClientCompany(c.getId(), c.getBusinessName(), c.getTradeName(), c.getRegistrationNumber(), c.getCpf(),
                 c.getStateRegistration(), c.getPhoneNumber(), c.getEmail(), c.getStreetName(), c.getAvenueName(),
                 c.getNumber(), c.getCity(), c.getState(), c.getZipCode(), imageKey);
+    }
+
+    private void verifyNoStorageChanges() {
+        verify(storageService, never()).upload(any(), any());
+        verify(storageService, never()).delete(any());
     }
 
 }

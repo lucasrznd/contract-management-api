@@ -10,12 +10,9 @@ import br.com.lucasrznd.contractmanagementapi.repositories.SellerRepository;
 import br.com.lucasrznd.contractmanagementapi.specifications.TextSearchSpecification;
 import br.com.lucasrznd.contractmanagementapi.storage.StorageService;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import static br.com.lucasrznd.contractmanagementapi.storage.StorageFolder.SELLER_IMAGES;
 
@@ -28,18 +25,16 @@ public class SellerService {
      */
     private static final String[] SEARCH_FIELDS = {"name", "phoneNumber"};
 
-    private static final Logger logger = LogManager.getLogger();
-
     private final SellerRepository repository;
     private final SellerMapper mapper;
     private final StorageService storageService;
 
     public SellerResponse save(SellerRequest request) {
         Seller seller = mapper.toEntity(request);
-        String imageKey = uploadImage(request.image());
+        String imageKey = storageService.uploadIfPresent(request.image(), SELLER_IMAGES);
         seller.setImageKey(imageKey);
 
-        return mapper.toResponse(saveOrDiscardImage(seller, imageKey));
+        return mapper.toResponse(storageService.discardOnFailure(imageKey, () -> repository.save(seller)));
     }
 
     public Page<SellerResponse> findAll(final String text, final Pageable pageable) {
@@ -55,14 +50,14 @@ public class SellerService {
         String oldImageKey = seller.getImageKey();
 
         Seller updatedSeller = mapper.update(request, seller);
-        String newImageKey = uploadImage(request.image());
+        String newImageKey = storageService.uploadIfPresent(request.image(), SELLER_IMAGES);
         if (newImageKey == null) {
             return mapper.toResponse(repository.save(updatedSeller));
         }
 
         updatedSeller.setImageKey(newImageKey);
-        SellerResponse response = mapper.toResponse(saveOrDiscardImage(updatedSeller, newImageKey));
-        deleteImageQuietly(oldImageKey);
+        SellerResponse response = mapper.toResponse(storageService.discardOnFailure(newImageKey, () -> repository.save(updatedSeller)));
+        storageService.deleteQuietly(oldImageKey);
 
         return response;
     }
@@ -77,41 +72,7 @@ public class SellerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Object not found. Id: " + id + ", Type: " + SellerResponse.class.getSimpleName()));
 
         repository.delete(seller);
-        deleteImageQuietly(seller.getImageKey());
-    }
-
-    private String uploadImage(final MultipartFile image) {
-        if (image == null || image.isEmpty()) {
-            return null;
-        }
-        return storageService.upload(image, SELLER_IMAGES);
-    }
-
-    /**
-     * Saves the seller; if it fails, removes the just uploaded image so no orphan object is left in the storage.
-     */
-    private Seller saveOrDiscardImage(final Seller seller, final String uploadedImageKey) {
-        try {
-            return repository.save(seller);
-        } catch (RuntimeException e) {
-            deleteImageQuietly(uploadedImageKey);
-            throw e;
-        }
-    }
-
-    /**
-     * Image cleanup must never fail the seller operation; an orphan object is preferable to a failed request.
-     */
-    private void deleteImageQuietly(final String imageKey) {
-        if (imageKey == null) {
-            return;
-        }
-
-        try {
-            storageService.delete(imageKey);
-        } catch (RuntimeException e) {
-            logger.warn("Could not delete seller image {}: {}", imageKey, e.getMessage());
-        }
+        storageService.deleteQuietly(seller.getImageKey());
     }
 
 }
