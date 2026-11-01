@@ -7,6 +7,7 @@ import br.com.lucasrznd.contractmanagementapi.dtos.response.SellerResponse;
 import br.com.lucasrznd.contractmanagementapi.entities.Seller;
 import br.com.lucasrznd.contractmanagementapi.mappers.SellerMapper;
 import br.com.lucasrznd.contractmanagementapi.repositories.SellerRepository;
+import br.com.lucasrznd.contractmanagementapi.specifications.TextSearchSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SellerService {
 
+    /**
+     * Fields used by the text search. Each one must have a trigram index (see db/migration).
+     */
+    private static final String[] SEARCH_FIELDS = {"name", "phoneNumber"};
+
     private final SellerRepository repository;
     private final SellerMapper mapper;
 
@@ -23,8 +29,8 @@ public class SellerService {
         return mapper.toResponse(repository.save(mapper.toEntity(request)));
     }
 
-    public Page<SellerResponse> findAll(final Pageable pageable) {
-        return repository.findAll(pageable).map(mapper::toResponse);
+    public Page<SellerResponse> findAll(final String text, final Pageable pageable) {
+        return repository.findAll(TextSearchSpecification.of(text, SEARCH_FIELDS), pageable).map(mapper::toResponse);
     }
 
     public SellerResponse update(final Long id, final UpdateSellerRequest request) {

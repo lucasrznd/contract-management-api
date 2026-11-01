@@ -46,7 +46,9 @@ public interface SellerController {
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping
-    ResponseEntity<Page<SellerResponse>> findAll(@ParameterObject @PageableDefault(sort = "id") Pageable pageable);
+    ResponseEntity<Page<SellerResponse>> findAll(@Parameter(description = "Text to search by name or phone number (case and accent insensitive)", example = "joao")
+                                                 @RequestParam(name = "text", required = false) String text,
+                                                 @ParameterObject @PageableDefault(sort = "id") Pageable pageable);
 
     @Operation(summary = "Update seller")
     @ApiResponses(value = {
