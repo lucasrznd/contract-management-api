@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,7 @@ public class ContractService {
     private final PDFService pdfService;
     private final ZapSignService zapSignService;
     private static final Logger logger = LogManager.getLogger();
+    private static final Locale PT_BR = new Locale("pt", "BR");
 
     public ContractResponse save(ContractRequest request) {
         Contract contract = mapper.toEntity(request);
@@ -84,7 +86,7 @@ public class ContractService {
             totalRevenue += contract.getMonthlyPrice() * Math.abs(monthDiff);
         }
 
-        return NumberFormat.getCurrencyInstance().format(totalRevenue);
+        return NumberFormat.getCurrencyInstance(PT_BR).format(totalRevenue);
     }
 
     public byte[] getPDF(final Long id) {
