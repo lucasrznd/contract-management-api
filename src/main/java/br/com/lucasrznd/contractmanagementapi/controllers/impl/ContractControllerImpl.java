@@ -86,6 +86,11 @@ public class ContractControllerImpl implements ContractController {
     }
 
     @Override
+    public ResponseEntity<ContractResponse> findById(Long id) {
+        return ResponseEntity.ok().body(service.findById(id));
+    }
+
+    @Override
     public ResponseEntity<ContractResponse> update(Long id, UpdateContractRequest request) {
         return ResponseEntity.ok().body(service.update(id, request));
     }

@@ -75,6 +75,25 @@ class ContractControllerImplTest {
     }
 
     @Test
+    public void findContractById_WithExistingId_ReturnsOk() throws Exception {
+        when(service.findById(1L)).thenReturn(CONTRACT_RESPONSE);
+
+        mockMvc.perform(get("/contracts/" + 1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.advertisingOrder").value(CONTRACT_RESPONSE.advertisingOrder()));
+    }
+
+    @Test
+    public void findContractById_WithUnexistingId_ReturnsNotFound() throws Exception {
+        doThrow(ResourceNotFoundException.class).when(service).findById(1L);
+
+        mockMvc.perform(get("/contracts/" + 1))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value(NOT_FOUND.getReasonPhrase()))
+                .andExpect(jsonPath("$.status").value(NOT_FOUND.value()));
+    }
+
+    @Test
     public void updateContract_WithExistingId_ReturnsOk() throws Exception {
         when(service.update(1L, UPDATE_CONTRACT_REQUEST)).thenReturn(CONTRACT_RESPONSE);
 
