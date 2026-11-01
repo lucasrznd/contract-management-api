@@ -149,6 +149,26 @@ class CompanyServiceTest {
     }
 
     @Test
+    public void findCompanyById_WithExistingId_ReturnsCompany() {
+        when(repository.findById(1L)).thenReturn(Optional.of(COMPANY_ENTITY));
+        when(mapper.toResponse(COMPANY_ENTITY)).thenReturn(COMPANY_RESPONSE);
+
+        var foundCompany = service.findById(1L);
+
+        assertThat(foundCompany).isEqualTo(COMPANY_RESPONSE);
+        verify(repository).findById(1L);
+        verify(mapper).toResponse(COMPANY_ENTITY);
+    }
+
+    @Test
+    public void findCompanyById_WithUnexistingId_ThrowsException() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.findById(1L)).isInstanceOf(ResourceNotFoundException.class);
+        verify(mapper, times(0)).toResponse(any());
+    }
+
+    @Test
     public void updateCompany_WithExistingId_ReturnsUpdatedCompany() {
         when(repository.findById(1L)).thenReturn(Optional.of(COMPANY_ENTITY));
         when(mapper.update(UPDATE_COMPANY_REQUEST, COMPANY_ENTITY)).thenReturn(UPDATED_ENTITY);

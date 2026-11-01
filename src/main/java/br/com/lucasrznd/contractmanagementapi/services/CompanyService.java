@@ -37,6 +37,10 @@ public class CompanyService {
         return Math.toIntExact(repository.count());
     }
 
+    public CompanyResponse findById(final Long id) {
+        return mapper.toResponse(find(id));
+    }
+
     public CompanyResponse update(final Long id, final UpdateCompanyRequest request) {
         ClientCompany entity = find(id);
 

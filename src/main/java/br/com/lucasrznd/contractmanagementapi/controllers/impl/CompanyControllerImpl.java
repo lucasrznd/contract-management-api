@@ -35,6 +35,11 @@ public class CompanyControllerImpl implements CompanyController {
     }
 
     @Override
+    public ResponseEntity<CompanyResponse> findById(Long id) {
+        return ResponseEntity.ok().body(service.findById(id));
+    }
+
+    @Override
     public ResponseEntity<CompanyResponse> update(Long id, UpdateCompanyRequest request) {
         return ResponseEntity.ok().body(service.update(id, request));
     }

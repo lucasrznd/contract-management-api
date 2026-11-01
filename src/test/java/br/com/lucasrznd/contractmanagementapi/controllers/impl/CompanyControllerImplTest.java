@@ -56,6 +56,25 @@ class CompanyControllerImplTest {
     }
 
     @Test
+    public void findCompanyById_WithExistingId_ReturnsOk() throws Exception {
+        when(service.findById(1L)).thenReturn(COMPANY_RESPONSE);
+
+        mockMvc.perform(get("/companies/" + 1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.businessName").value(COMPANY_RESPONSE.businessName()));
+    }
+
+    @Test
+    public void findCompanyById_WithUnexistingId_ReturnsNotFound() throws Exception {
+        doThrow(ResourceNotFoundException.class).when(service).findById(1L);
+
+        mockMvc.perform(get("/companies/" + 1))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value(NOT_FOUND.getReasonPhrase()))
+                .andExpect(jsonPath("$.status").value(NOT_FOUND.value()));
+    }
+
+    @Test
     public void updateCompany_WithExistingId_ReturnsOk() throws Exception {
         when(service.update(1L, UPDATE_COMPANY_REQUEST)).thenReturn(COMPANY_RESPONSE);
 

@@ -62,6 +62,21 @@ public interface CompanyController {
     @GetMapping("/count")
     ResponseEntity<Integer> countCompanies();
 
+    @Operation(summary = "Find company by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Company founded", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = CompanyResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404", description = "Company not found", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping("/{id}")
+    ResponseEntity<CompanyResponse> findById(@Parameter(description = "Company id", required = true, example = "1")
+                                             @PathVariable(name = "id") Long id);
+
     @Operation(summary = "Update company")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Company updated", content = @Content(
