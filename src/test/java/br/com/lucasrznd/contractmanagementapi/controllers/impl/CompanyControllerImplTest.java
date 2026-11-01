@@ -18,6 +18,7 @@ import java.util.List;
 import static br.com.lucasrznd.contractmanagementapi.common.CompanyConstants.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,7 +77,7 @@ class CompanyControllerImplTest {
     @Test
     public void listCompanies_ReturnsPagedCompanies() throws Exception {
         var pageable = PageRequest.of(0, 10);
-        when(service.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(COMPANY_RESPONSE), pageable, 1));
+        when(service.findAll(isNull(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(COMPANY_RESPONSE), pageable, 1));
 
         mockMvc.perform(get("/companies"))
                 .andExpect(status().isOk())
@@ -88,12 +89,23 @@ class CompanyControllerImplTest {
 
     @Test
     public void listCompanies_WithPageParams_PassesPageableToService() throws Exception {
-        when(service.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
+        when(service.findAll(isNull(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
 
         mockMvc.perform(get("/companies").param("page", "2").param("size", "5").param("sort", "id,desc"))
                 .andExpect(status().isOk());
 
-        verify(service).findAll(PageRequest.of(2, 5, Sort.by("id").descending()));
+        verify(service).findAll(null, PageRequest.of(2, 5, Sort.by("id").descending()));
+    }
+
+    @Test
+    public void listCompanies_WithText_PassesTextToService() throws Exception {
+        when(service.findAll(any(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(COMPANY_RESPONSE)));
+
+        mockMvc.perform(get("/companies").param("text", "joão"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)));
+
+        verify(service).findAll("joão", PageRequest.of(0, 10, Sort.by("id")));
     }
 
     @Test

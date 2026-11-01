@@ -25,8 +25,8 @@ public class CompanyControllerImpl implements CompanyController {
     }
 
     @Override
-    public ResponseEntity<Page<CompanyResponse>> findAll(Pageable pageable) {
-        return ResponseEntity.ok().body(service.findAll(pageable));
+    public ResponseEntity<Page<CompanyResponse>> findAll(String text, Pageable pageable) {
+        return ResponseEntity.ok().body(service.findAll(text, pageable));
     }
 
     @Override

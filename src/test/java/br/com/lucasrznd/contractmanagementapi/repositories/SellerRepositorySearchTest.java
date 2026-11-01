@@ -5,37 +5,17 @@ import br.com.lucasrznd.contractmanagementapi.specifications.TextSearchSpecifica
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Runs against a real PostgreSQL (Flyway migrations + pg_trgm/unaccent), which H2 cannot emulate.
- * Skipped automatically when Docker is not available.
- */
-@DataJpaTest(properties = {
-        "spring.flyway.enabled=true",
-        "spring.jpa.hibernate.ddl-auto=validate"
-})
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Testcontainers(disabledWithoutDocker = true)
-class SellerRepositorySearchTest {
+class SellerRepositorySearchTest extends AbstractPostgresRepositoryTest {
 
     private static final String[] SEARCH_FIELDS = {"name", "phoneNumber"};
-
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18-alpine");
 
     @Autowired
     private SellerRepository repository;

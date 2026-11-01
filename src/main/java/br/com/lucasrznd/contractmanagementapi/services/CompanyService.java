@@ -7,6 +7,7 @@ import br.com.lucasrznd.contractmanagementapi.dtos.response.CompanyResponse;
 import br.com.lucasrznd.contractmanagementapi.entities.ClientCompany;
 import br.com.lucasrznd.contractmanagementapi.mappers.CompanyMapper;
 import br.com.lucasrznd.contractmanagementapi.repositories.ClientCompanyRepository;
+import br.com.lucasrznd.contractmanagementapi.specifications.TextSearchSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CompanyService {
 
+    /**
+     * Fields used by the text search. Each one must have a trigram index (see db/migration).
+     */
+    private static final String[] SEARCH_FIELDS = {"businessName", "tradeName", "registrationNumber", "cpf", "city"};
+
     private final ClientCompanyRepository repository;
     private final CompanyMapper mapper;
 
@@ -23,8 +29,8 @@ public class CompanyService {
         return mapper.toResponse(repository.save(mapper.toEntity(request)));
     }
 
-    public Page<CompanyResponse> findAll(final Pageable pageable) {
-        return repository.findAll(pageable).map(mapper::toResponse);
+    public Page<CompanyResponse> findAll(final String text, final Pageable pageable) {
+        return repository.findAll(TextSearchSpecification.of(text, SEARCH_FIELDS), pageable).map(mapper::toResponse);
     }
 
     public Integer countCompanies() {
