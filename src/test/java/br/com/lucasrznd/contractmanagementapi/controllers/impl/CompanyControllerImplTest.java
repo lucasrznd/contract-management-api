@@ -5,6 +5,10 @@ import br.com.lucasrznd.contractmanagementapi.services.CompanyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,7 +17,9 @@ import java.util.List;
 
 import static br.com.lucasrznd.contractmanagementapi.common.CompanyConstants.*;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -68,12 +74,26 @@ class CompanyControllerImplTest {
     }
 
     @Test
-    public void listCompanies_ReturnsCompanies() throws Exception {
-        when(service.findAll()).thenReturn(List.of(COMPANY_RESPONSE));
+    public void listCompanies_ReturnsPagedCompanies() throws Exception {
+        var pageable = PageRequest.of(0, 10);
+        when(service.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(COMPANY_RESPONSE), pageable, 1));
 
         mockMvc.perform(get("/companies"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.page.totalElements").value(1))
+                .andExpect(jsonPath("$.page.number").value(0))
+                .andExpect(jsonPath("$.page.size").value(10));
+    }
+
+    @Test
+    public void listCompanies_WithPageParams_PassesPageableToService() throws Exception {
+        when(service.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
+
+        mockMvc.perform(get("/companies").param("page", "2").param("size", "5").param("sort", "id,desc"))
+                .andExpect(status().isOk());
+
+        verify(service).findAll(PageRequest.of(2, 5, Sort.by("id").descending()));
     }
 
     @Test

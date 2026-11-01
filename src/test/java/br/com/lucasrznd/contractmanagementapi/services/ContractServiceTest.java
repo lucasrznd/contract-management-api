@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -155,16 +157,17 @@ class ContractServiceTest {
     }
 
     @Test
-    public void listContracts_ReturnsAllContracts() {
-        List<Contract> list = List.of(CONTRACT_ENTITY);
-        when(repository.findAll()).thenReturn(list);
+    public void listContracts_ReturnsPagedContracts() {
+        var pageable = PageRequest.of(0, 10);
+        when(repository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(CONTRACT_ENTITY), pageable, 1));
         when(mapper.toResponse(CONTRACT_ENTITY)).thenReturn(CONTRACT_RESPONSE);
 
-        var contractsList = service.findAll();
+        var contractsPage = service.findAll(pageable);
 
-        assertThat(contractsList).isNotNull();
-        assertThat(contractsList.size()).isEqualTo(1);
-        verify(repository).findAll();
+        assertThat(contractsPage).isNotNull();
+        assertThat(contractsPage.getContent()).containsExactly(CONTRACT_RESPONSE);
+        assertThat(contractsPage.getTotalElements()).isEqualTo(1);
+        verify(repository).findAll(pageable);
         verify(mapper).toResponse(CONTRACT_ENTITY);
     }
 

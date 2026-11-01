@@ -10,6 +10,8 @@ import br.com.lucasrznd.contractmanagementapi.repositories.ContractRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import response.DocResponse;
 
@@ -19,6 +21,7 @@ import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class ContractService {
     private final PDFService pdfService;
     private final ZapSignService zapSignService;
     private static final Logger logger = LogManager.getLogger();
+    private static final Locale PT_BR = new Locale("pt", "BR");
 
     public ContractResponse save(ContractRequest request) {
         Contract contract = mapper.toEntity(request);
@@ -37,8 +41,8 @@ public class ContractService {
         return mapper.toResponse(repository.save(contract));
     }
 
-    public List<ContractResponse> findAll() {
-        return repository.findAll().stream().map(mapper::toResponse).toList();
+    public Page<ContractResponse> findAll(final Pageable pageable) {
+        return repository.findAll(pageable).map(mapper::toResponse);
     }
 
     public List<ContractResponse> findAllByExpirationNextWeek() {
@@ -82,7 +86,7 @@ public class ContractService {
             totalRevenue += contract.getMonthlyPrice() * Math.abs(monthDiff);
         }
 
-        return NumberFormat.getCurrencyInstance().format(totalRevenue);
+        return NumberFormat.getCurrencyInstance(PT_BR).format(totalRevenue);
     }
 
     public byte[] getPDF(final Long id) {

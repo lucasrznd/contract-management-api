@@ -13,10 +13,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
@@ -38,15 +40,15 @@ public interface CompanyController {
     @PostMapping
     ResponseEntity<CompanyResponse> save(@RequestBody @Valid final CompanyRequest request);
 
-    @Operation(summary = "Find all companies")
+    @Operation(summary = "Find all companies (paginated)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Companies found", content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = CompanyResponse.class)))),
+                    mediaType = APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping
-    ResponseEntity<List<CompanyResponse>> findAll();
+    ResponseEntity<Page<CompanyResponse>> findAll(@ParameterObject @PageableDefault(sort = "id") Pageable pageable);
 
     @Operation(summary = "Returns quantity of companies")
     @ApiResponses(value = {

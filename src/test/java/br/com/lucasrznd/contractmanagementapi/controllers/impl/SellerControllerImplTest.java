@@ -7,6 +7,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -14,7 +18,9 @@ import java.util.List;
 
 import static br.com.lucasrznd.contractmanagementapi.common.SellerConstants.*;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -72,12 +78,27 @@ class SellerControllerImplTest {
     }
 
     @Test
-    public void listSellers_ReturnsSellers() throws Exception {
-        when(service.findAll()).thenReturn(List.of(SELLER_RESPONSE));
+    public void listSellers_ReturnsPagedSellers() throws Exception {
+        var pageable = PageRequest.of(0, 10);
+        when(service.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(SELLER_RESPONSE), pageable, 1));
 
         mockMvc.perform(get("/sellers"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].name").value(SELLER_RESPONSE.name()))
+                .andExpect(jsonPath("$.page.totalElements").value(1))
+                .andExpect(jsonPath("$.page.number").value(0))
+                .andExpect(jsonPath("$.page.size").value(10));
+    }
+
+    @Test
+    public void listSellers_WithPageParams_PassesPageableToService() throws Exception {
+        when(service.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
+
+        mockMvc.perform(get("/sellers").param("page", "2").param("size", "5").param("sort", "name,desc"))
+                .andExpect(status().isOk());
+
+        verify(service).findAll(PageRequest.of(2, 5, Sort.by("name").descending()));
     }
 
     @Test

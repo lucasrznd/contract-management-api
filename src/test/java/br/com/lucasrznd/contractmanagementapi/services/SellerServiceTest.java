@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -86,16 +88,17 @@ class SellerServiceTest {
     }
 
     @Test
-    public void listSellers_ReturnsAllSellers() {
-        List<Seller> list = List.of(SELLER_ENTITY);
-        when(repository.findAll()).thenReturn(list);
-        when(mapper.toResponse(list.get(0))).thenReturn(SELLER_RESPONSE);
+    public void listSellers_ReturnsPagedSellers() {
+        var pageable = PageRequest.of(0, 10);
+        when(repository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(SELLER_ENTITY), pageable, 1));
+        when(mapper.toResponse(SELLER_ENTITY)).thenReturn(SELLER_RESPONSE);
 
-        var sellersList = service.findAll();
+        var sellersPage = service.findAll(pageable);
 
-        assertThat(sellersList).isNotNull();
-        assertThat(sellersList.size()).isEqualTo(1);
-        verify(repository).findAll();
+        assertThat(sellersPage).isNotNull();
+        assertThat(sellersPage.getContent()).containsExactly(SELLER_RESPONSE);
+        assertThat(sellersPage.getTotalElements()).isEqualTo(1);
+        verify(repository).findAll(pageable);
         verify(mapper).toResponse(any(Seller.class));
     }
 

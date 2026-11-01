@@ -6,6 +6,8 @@ import br.com.lucasrznd.contractmanagementapi.dtos.request.UpdateContractRequest
 import br.com.lucasrznd.contractmanagementapi.dtos.response.ContractResponse;
 import br.com.lucasrznd.contractmanagementapi.services.ContractService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import response.DocResponse;
@@ -29,8 +31,8 @@ public class ContractControllerImpl implements ContractController {
     }
 
     @Override
-    public ResponseEntity<List<ContractResponse>> findAll() {
-        return ResponseEntity.ok().body(service.findAll());
+    public ResponseEntity<Page<ContractResponse>> findAll(Pageable pageable) {
+        return ResponseEntity.ok().body(service.findAll(pageable));
     }
 
     @Override

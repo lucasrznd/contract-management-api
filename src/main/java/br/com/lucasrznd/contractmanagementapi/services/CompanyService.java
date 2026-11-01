@@ -8,9 +8,9 @@ import br.com.lucasrznd.contractmanagementapi.entities.ClientCompany;
 import br.com.lucasrznd.contractmanagementapi.mappers.CompanyMapper;
 import br.com.lucasrznd.contractmanagementapi.repositories.ClientCompanyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +23,8 @@ public class CompanyService {
         return mapper.toResponse(repository.save(mapper.toEntity(request)));
     }
 
-    public List<CompanyResponse> findAll() {
-        return repository.findAll().stream().map(mapper::toResponse).toList();
+    public Page<CompanyResponse> findAll(final Pageable pageable) {
+        return repository.findAll(pageable).map(mapper::toResponse);
     }
 
     public Integer countCompanies() {
