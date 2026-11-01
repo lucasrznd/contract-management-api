@@ -51,7 +51,9 @@ public interface ContractController {
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping
-    ResponseEntity<Page<ContractResponse>> findAll(@ParameterObject @PageableDefault(sort = "id") Pageable pageable);
+    ResponseEntity<Page<ContractResponse>> findAll(@Parameter(description = "Text to search by company name, seller name or advertising order (case and accent insensitive)")
+                                          @RequestParam(name = "text", required = false) String text,
+                                          @ParameterObject @PageableDefault(sort = "id") Pageable pageable);
 
     @Operation(summary = "Find contracts that will expire in 7 days")
     @ApiResponses(value = {

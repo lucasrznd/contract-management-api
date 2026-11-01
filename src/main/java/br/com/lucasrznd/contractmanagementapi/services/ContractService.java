@@ -7,6 +7,7 @@ import br.com.lucasrznd.contractmanagementapi.dtos.response.ContractResponse;
 import br.com.lucasrznd.contractmanagementapi.entities.Contract;
 import br.com.lucasrznd.contractmanagementapi.mappers.ContractMapper;
 import br.com.lucasrznd.contractmanagementapi.repositories.ContractRepository;
+import br.com.lucasrznd.contractmanagementapi.specifications.TextSearchSpecification;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +28,11 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class ContractService {
 
+    /**
+     * Fields used by the text search. Each one must have a trigram index (see db/migration).
+     */
+    private static final String[] SEARCH_FIELDS = {"clientCompany.tradeName", "clientCompany.businessName", "seller.name", "advertisingOrder"};
+
     private final ContractRepository repository;
     private final ContractMapper mapper;
     private final PDFService pdfService;
@@ -41,8 +47,8 @@ public class ContractService {
         return mapper.toResponse(repository.save(contract));
     }
 
-    public Page<ContractResponse> findAll(final Pageable pageable) {
-        return repository.findAll(pageable).map(mapper::toResponse);
+    public Page<ContractResponse> findAll(final String text, final Pageable pageable) {
+        return repository.findAll(TextSearchSpecification.of(text, SEARCH_FIELDS), pageable).map(mapper::toResponse);
     }
 
     public List<ContractResponse> findAllByExpirationNextWeek() {
