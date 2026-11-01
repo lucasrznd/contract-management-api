@@ -1,6 +1,7 @@
 package br.com.lucasrznd.contractmanagementapi.specifications;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Join;
@@ -53,7 +54,7 @@ public final class TextSearchSpecification {
             }
 
             Expression<?>[] searchableFields = Arrays.stream(fields)
-                    .map(field -> normalized(cb, resolvePath(root, field)))
+                    .map(field -> normalized(cb, resolvePath(root, field, isCountQuery(query))))
                     .toArray(Expression[]::new);
 
             Predicate[] termPredicates = Arrays.stream(terms)
@@ -75,12 +76,16 @@ public final class TextSearchSpecification {
         return cb.function(UNACCENT_FUNCTION, String.class, cb.lower(path));
     }
 
-    private static Path<String> resolvePath(final Root<?> root, final String field) {
+    private static boolean isCountQuery(final CriteriaQuery<?> query) {
+        return query == null || Long.class.equals(query.getResultType()) || long.class.equals(query.getResultType());
+    }
+
+    private static Path<String> resolvePath(final Root<?> root, final String field, final boolean countQuery) {
         String[] parts = field.split("\\.");
         From<?, ?> from = root;
 
         for (int i = 0; i < parts.length - 1; i++) {
-            from = getOrCreateLeftJoin(from, parts[i]);
+            from = countQuery ? getOrCreateLeftJoin(from, parts[i]) : getOrCreateLeftFetch(from, parts[i]);
         }
 
         return from.get(parts[parts.length - 1]);
@@ -95,6 +100,20 @@ public final class TextSearchSpecification {
                 .findFirst()
                 .<Join<?, ?>>map(join -> join)
                 .orElseGet(() -> from.join(attribute, JoinType.LEFT));
+    }
+
+    /**
+     * On the select query the association is fetched instead of only joined: the same join is used to filter
+     * and to load the association, so it is not joined twice when the repository also fetches it
+     * (e.g. {@code @EntityGraph}), and it does not trigger N+1 selects when it is not.
+     * Count queries cannot fetch, so they use a plain join.
+     */
+    private static Join<?, ?> getOrCreateLeftFetch(final From<?, ?> from, final String attribute) {
+        return from.getFetches().stream()
+                .filter(fetch -> fetch.getAttribute().getName().equals(attribute) && fetch.getJoinType() == JoinType.LEFT)
+                .findFirst()
+                .<Join<?, ?>>map(fetch -> (Join<?, ?>) fetch)
+                .orElseGet(() -> (Join<?, ?>) from.fetch(attribute, JoinType.LEFT));
     }
 
     /**
