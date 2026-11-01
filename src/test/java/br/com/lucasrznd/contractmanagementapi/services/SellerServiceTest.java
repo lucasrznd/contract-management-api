@@ -4,6 +4,8 @@ import br.com.lucasrznd.contractmanagementapi.controllers.exceptions.ResourceNot
 import br.com.lucasrznd.contractmanagementapi.entities.Seller;
 import br.com.lucasrznd.contractmanagementapi.mappers.SellerMapper;
 import br.com.lucasrznd.contractmanagementapi.repositories.SellerRepository;
+import br.com.lucasrznd.contractmanagementapi.storage.StorageException;
+import br.com.lucasrznd.contractmanagementapi.storage.StorageService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +28,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SellerServiceTest {
 
+    private static final String NEW_IMAGE_KEY = "sellers/new-image.png";
+
     @InjectMocks
     private SellerService service;
 
@@ -35,17 +39,62 @@ class SellerServiceTest {
     @Mock
     private SellerMapper mapper;
 
+    @Mock
+    private StorageService storageService;
+
     @Test
     public void saveSeller_WithValidData_ReturnsSeller() {
-        when(mapper.toEntity(SELLER_REQUEST)).thenReturn(SELLER_ENTITY);
-        when(repository.save(SELLER_ENTITY)).thenReturn(SELLER_ENTITY);
-        when(mapper.toResponse(SELLER_ENTITY)).thenReturn(SELLER_RESPONSE);
+        var seller = newSeller(null);
+        when(mapper.toEntity(SELLER_REQUEST)).thenReturn(seller);
+        when(repository.save(seller)).thenReturn(seller);
+        when(mapper.toResponse(seller)).thenReturn(SELLER_RESPONSE);
 
         var savedSeller = service.save(SELLER_REQUEST);
 
         assertThat(savedSeller).isNotNull();
+        assertThat(seller.getImageKey()).isNull();
         verify(mapper).toEntity(SELLER_REQUEST);
         verify(repository).save(any(Seller.class));
+        verifyNoInteractions(storageService);
+    }
+
+    @Test
+    public void saveSeller_WithImage_UploadsImageAndSavesKey() {
+        var request = SELLER_REQUEST.withImage(SELLER_IMAGE);
+        var seller = newSeller(null);
+        when(mapper.toEntity(request)).thenReturn(seller);
+        when(storageService.upload(SELLER_IMAGE, "sellers")).thenReturn(IMAGE_KEY);
+        when(repository.save(seller)).thenReturn(seller);
+        when(mapper.toResponse(seller)).thenReturn(SELLER_RESPONSE);
+
+        var savedSeller = service.save(request);
+
+        assertThat(savedSeller).isEqualTo(SELLER_RESPONSE);
+        assertThat(seller.getImageKey()).isEqualTo(IMAGE_KEY);
+        verify(storageService).upload(SELLER_IMAGE, "sellers");
+    }
+
+    @Test
+    public void saveSeller_WithImageAndRepositoryFailure_DeletesUploadedImage() {
+        var request = SELLER_REQUEST.withImage(SELLER_IMAGE);
+        var seller = newSeller(null);
+        when(mapper.toEntity(request)).thenReturn(seller);
+        when(storageService.upload(SELLER_IMAGE, "sellers")).thenReturn(IMAGE_KEY);
+        when(repository.save(seller)).thenThrow(DataIntegrityViolationException.class);
+
+        assertThatThrownBy(() -> service.save(request)).isInstanceOf(DataIntegrityViolationException.class);
+        verify(storageService).delete(IMAGE_KEY);
+        verify(mapper, times(0)).toResponse(any());
+    }
+
+    @Test
+    public void saveSeller_WithStorageFailure_DoesNotSaveSeller() {
+        var request = SELLER_REQUEST.withImage(SELLER_IMAGE);
+        when(mapper.toEntity(request)).thenReturn(newSeller(null));
+        when(storageService.upload(SELLER_IMAGE, "sellers")).thenThrow(StorageException.class);
+
+        assertThatThrownBy(() -> service.save(request)).isInstanceOf(StorageException.class);
+        verify(repository, times(0)).save(any());
     }
 
     @Test
@@ -98,8 +147,55 @@ class SellerServiceTest {
         var updatedSeller = service.update(1L, UPDATE_SELLER_REQUEST);
 
         assertThat(updatedSeller).isNotNull();
+        assertThat(UPDATED_ENTITY.getImageKey()).isEqualTo(IMAGE_KEY);
         verify(mapper).update(UPDATE_SELLER_REQUEST, SELLER_ENTITY);
         verify(repository).save(UPDATED_ENTITY);
+        verifyNoInteractions(storageService);
+    }
+
+    @Test
+    public void updateSeller_WithNewImage_ReplacesImageAndDeletesOldOne() {
+        var request = UPDATE_SELLER_REQUEST_WITH_IMAGE;
+        var seller = newSeller(IMAGE_KEY);
+        when(repository.findById(1L)).thenReturn(Optional.of(seller));
+        when(mapper.update(request, seller)).thenReturn(seller);
+        when(storageService.upload(SELLER_IMAGE, "sellers")).thenReturn(NEW_IMAGE_KEY);
+        when(repository.save(seller)).thenReturn(seller);
+        when(mapper.toResponse(seller)).thenReturn(SELLER_RESPONSE);
+
+        service.update(1L, request);
+
+        assertThat(seller.getImageKey()).isEqualTo(NEW_IMAGE_KEY);
+        verify(storageService).delete(IMAGE_KEY);
+        verify(storageService, times(0)).delete(NEW_IMAGE_KEY);
+    }
+
+    @Test
+    public void updateSeller_WithNewImageAndDeleteFailure_StillReturnsUpdatedSeller() {
+        var request = UPDATE_SELLER_REQUEST_WITH_IMAGE;
+        var seller = newSeller(IMAGE_KEY);
+        when(repository.findById(1L)).thenReturn(Optional.of(seller));
+        when(mapper.update(request, seller)).thenReturn(seller);
+        when(storageService.upload(SELLER_IMAGE, "sellers")).thenReturn(NEW_IMAGE_KEY);
+        when(repository.save(seller)).thenReturn(seller);
+        when(mapper.toResponse(seller)).thenReturn(SELLER_RESPONSE);
+        doThrow(StorageException.class).when(storageService).delete(IMAGE_KEY);
+
+        assertThat(service.update(1L, request)).isEqualTo(SELLER_RESPONSE);
+    }
+
+    @Test
+    public void updateSeller_WithNewImageAndRepositoryFailure_KeepsOldImage() {
+        var request = UPDATE_SELLER_REQUEST_WITH_IMAGE;
+        var seller = newSeller(IMAGE_KEY);
+        when(repository.findById(1L)).thenReturn(Optional.of(seller));
+        when(mapper.update(request, seller)).thenReturn(seller);
+        when(storageService.upload(SELLER_IMAGE, "sellers")).thenReturn(NEW_IMAGE_KEY);
+        when(repository.save(seller)).thenThrow(DataIntegrityViolationException.class);
+
+        assertThatThrownBy(() -> service.update(1L, request)).isInstanceOf(DataIntegrityViolationException.class);
+        verify(storageService).delete(NEW_IMAGE_KEY);
+        verify(storageService, times(0)).delete(IMAGE_KEY);
     }
 
     @Test
@@ -107,6 +203,7 @@ class SellerServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.update(1L, UPDATE_SELLER_REQUEST)).isInstanceOf(ResourceNotFoundException.class);
+        verifyNoInteractions(storageService);
     }
 
     @Test
@@ -131,6 +228,16 @@ class SellerServiceTest {
         assertThatCode(() -> service.delete(1L)).doesNotThrowAnyException();
         verify(repository).findById(1L);
         verify(repository).delete(any(Seller.class));
+        verify(storageService).delete(IMAGE_KEY);
+    }
+
+    @Test
+    public void deleteSeller_WithRepositoryFailure_KeepsImage() {
+        when(repository.findById(1L)).thenReturn(Optional.of(SELLER_ENTITY));
+        doThrow(DataIntegrityViolationException.class).when(repository).delete(SELLER_ENTITY);
+
+        assertThatThrownBy(() -> service.delete(1L)).isInstanceOf(DataIntegrityViolationException.class);
+        verifyNoInteractions(storageService);
     }
 
     @Test
@@ -139,6 +246,14 @@ class SellerServiceTest {
 
         verify(repository).findById(1L);
         verify(repository, times(0)).delete(any(Seller.class));
+        verifyNoInteractions(storageService);
+    }
+
+    /**
+     * Fresh instance per test: the service mutates the seller (image key), so shared constants must not be used.
+     */
+    private static Seller newSeller(final String imageKey) {
+        return new Seller(SELLER_ENTITY.getId(), SELLER_ENTITY.getName(), SELLER_ENTITY.getPhoneNumber(), imageKey);
     }
 
 }

@@ -18,7 +18,10 @@ public class Seller {
     private String name;
     private String phoneNumber;
 
+    /**
+     * Object storage key of the seller image (or a legacy external URL).
+     */
     @Column(columnDefinition = "TEXT")
-    private String urlImage;
+    private String imageKey;
 
 }

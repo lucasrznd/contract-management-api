@@ -8,10 +8,14 @@ import br.com.lucasrznd.contractmanagementapi.entities.Seller;
 import br.com.lucasrznd.contractmanagementapi.mappers.SellerMapper;
 import br.com.lucasrznd.contractmanagementapi.repositories.SellerRepository;
 import br.com.lucasrznd.contractmanagementapi.specifications.TextSearchSpecification;
+import br.com.lucasrznd.contractmanagementapi.storage.StorageService;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +26,23 @@ public class SellerService {
      */
     private static final String[] SEARCH_FIELDS = {"name", "phoneNumber"};
 
+    /**
+     * Storage folder of the seller images.
+     */
+    private static final String IMAGE_FOLDER = "sellers";
+
+    private static final Logger logger = LogManager.getLogger();
+
     private final SellerRepository repository;
     private final SellerMapper mapper;
+    private final StorageService storageService;
 
     public SellerResponse save(SellerRequest request) {
-        return mapper.toResponse(repository.save(mapper.toEntity(request)));
+        Seller seller = mapper.toEntity(request);
+        String imageKey = uploadImage(request.image());
+        seller.setImageKey(imageKey);
+
+        return mapper.toResponse(saveOrDiscardImage(seller, imageKey));
     }
 
     public Page<SellerResponse> findAll(final String text, final Pageable pageable) {
@@ -39,8 +55,19 @@ public class SellerService {
 
     public SellerResponse update(final Long id, final UpdateSellerRequest request) {
         Seller seller = find(id);
+        String oldImageKey = seller.getImageKey();
 
-        return mapper.toResponse(repository.save(mapper.update(request, seller)));
+        Seller updatedSeller = mapper.update(request, seller);
+        String newImageKey = uploadImage(request.image());
+        if (newImageKey == null) {
+            return mapper.toResponse(repository.save(updatedSeller));
+        }
+
+        updatedSeller.setImageKey(newImageKey);
+        SellerResponse response = mapper.toResponse(saveOrDiscardImage(updatedSeller, newImageKey));
+        deleteImageQuietly(oldImageKey);
+
+        return response;
     }
 
     private Seller find(final Long id) {
@@ -49,8 +76,45 @@ public class SellerService {
     }
 
     public void delete(Long id) {
-        repository.delete(repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Object not found. Id: " + id + ", Type: " + SellerResponse.class.getSimpleName())));
+        Seller seller = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Object not found. Id: " + id + ", Type: " + SellerResponse.class.getSimpleName()));
+
+        repository.delete(seller);
+        deleteImageQuietly(seller.getImageKey());
+    }
+
+    private String uploadImage(final MultipartFile image) {
+        if (image == null || image.isEmpty()) {
+            return null;
+        }
+        return storageService.upload(image, IMAGE_FOLDER);
+    }
+
+    /**
+     * Saves the seller; if it fails, removes the just uploaded image so no orphan object is left in the storage.
+     */
+    private Seller saveOrDiscardImage(final Seller seller, final String uploadedImageKey) {
+        try {
+            return repository.save(seller);
+        } catch (RuntimeException e) {
+            deleteImageQuietly(uploadedImageKey);
+            throw e;
+        }
+    }
+
+    /**
+     * Image cleanup must never fail the seller operation; an orphan object is preferable to a failed request.
+     */
+    private void deleteImageQuietly(final String imageKey) {
+        if (imageKey == null) {
+            return;
+        }
+
+        try {
+            storageService.delete(imageKey);
+        } catch (RuntimeException e) {
+            logger.warn("Could not delete seller image {}: {}", imageKey, e.getMessage());
+        }
     }
 
 }

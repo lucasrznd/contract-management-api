@@ -8,14 +8,19 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+        nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+        uses = StorageUrlMapper.class)
 public interface SellerMapper {
 
+    @Mapping(target = "urlImage", source = "imageKey", qualifiedByName = "toImageUrl")
     SellerResponse toResponse(final Seller seller);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "imageKey", ignore = true)
     Seller toEntity(final SellerRequest request);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "imageKey", ignore = true)
     Seller update(final UpdateSellerRequest request, @MappingTarget Seller seller);
 
 }
