@@ -50,6 +50,21 @@ public interface SellerController {
                                                  @RequestParam(name = "text", required = false) String text,
                                                  @ParameterObject @PageableDefault(sort = "id") Pageable pageable);
 
+    @Operation(summary = "Find seller by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Seller founded", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = SellerResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404", description = "Seller not found", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping("/{id}")
+    ResponseEntity<SellerResponse> findById(@Parameter(description = "Seller id", required = true, example = "1")
+                                            @PathVariable(name = "id") Long id);
+
     @Operation(summary = "Update seller")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Seller updated", content = @Content(

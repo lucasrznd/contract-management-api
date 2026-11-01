@@ -69,6 +69,26 @@ class SellerServiceTest {
     }
 
     @Test
+    public void findSellerById_WithExistingId_ReturnsSeller() {
+        when(repository.findById(1L)).thenReturn(Optional.of(SELLER_ENTITY));
+        when(mapper.toResponse(SELLER_ENTITY)).thenReturn(SELLER_RESPONSE);
+
+        var foundSeller = service.findById(1L);
+
+        assertThat(foundSeller).isEqualTo(SELLER_RESPONSE);
+        verify(repository).findById(1L);
+        verify(mapper).toResponse(SELLER_ENTITY);
+    }
+
+    @Test
+    public void findSellerById_WithUnexistingId_ThrowsException() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.findById(1L)).isInstanceOf(ResourceNotFoundException.class);
+        verify(mapper, times(0)).toResponse(any());
+    }
+
+    @Test
     public void updateSeller_WithExistingId_ReturnsUpdatedSeller() {
         when(repository.findById(1L)).thenReturn(Optional.of(SELLER_ENTITY));
         when(mapper.update(UPDATE_SELLER_REQUEST, SELLER_ENTITY)).thenReturn(UPDATED_ENTITY);

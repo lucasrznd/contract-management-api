@@ -33,6 +33,10 @@ public class SellerService {
         return repository.findAll(TextSearchSpecification.of(text, SEARCH_FIELDS), pageable).map(mapper::toResponse);
     }
 
+    public SellerResponse findById(Long id) {
+        return mapper.toResponse(find(id));
+    }
+
     public SellerResponse update(final Long id, final UpdateSellerRequest request) {
         Seller seller = find(id);
 

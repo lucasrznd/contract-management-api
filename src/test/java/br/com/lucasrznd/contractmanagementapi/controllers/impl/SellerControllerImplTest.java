@@ -60,6 +60,25 @@ class SellerControllerImplTest {
     }
 
     @Test
+    public void findSellerById_WithExistingId_ReturnsOk() throws Exception {
+        when(service.findById(1L)).thenReturn(SELLER_RESPONSE);
+
+        mockMvc.perform(get("/sellers/" + 1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(SELLER_RESPONSE.name()));
+    }
+
+    @Test
+    public void findSellerById_WithUnexistingId_ReturnsNotFound() throws Exception {
+        doThrow(ResourceNotFoundException.class).when(service).findById(1L);
+
+        mockMvc.perform(get("/sellers/" + 1))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value(NOT_FOUND.getReasonPhrase()))
+                .andExpect(jsonPath("$.status").value(NOT_FOUND.value()));
+    }
+
+    @Test
     public void updateSeller_WithExistingId_ReturnsOk() throws Exception {
         when(service.update(1L, UPDATE_SELLER_REQUEST)).thenReturn(SELLER_RESPONSE);
 

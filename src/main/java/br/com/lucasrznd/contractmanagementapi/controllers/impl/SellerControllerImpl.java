@@ -30,6 +30,11 @@ public class SellerControllerImpl implements SellerController {
     }
 
     @Override
+    public ResponseEntity<SellerResponse> findById(Long id) {
+        return ResponseEntity.ok().body(service.findById(id));
+    }
+
+    @Override
     public ResponseEntity<SellerResponse> update(Long id, UpdateSellerRequest request) {
         return ResponseEntity.ok().body(service.update(id, request));
     }
