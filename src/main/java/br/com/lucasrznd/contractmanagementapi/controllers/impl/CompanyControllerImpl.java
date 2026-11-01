@@ -6,10 +6,10 @@ import br.com.lucasrznd.contractmanagementapi.dtos.request.UpdateCompanyRequest;
 import br.com.lucasrznd.contractmanagementapi.dtos.response.CompanyResponse;
 import br.com.lucasrznd.contractmanagementapi.services.CompanyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -25,8 +25,8 @@ public class CompanyControllerImpl implements CompanyController {
     }
 
     @Override
-    public ResponseEntity<List<CompanyResponse>> findAll() {
-        return ResponseEntity.ok().body(service.findAll());
+    public ResponseEntity<Page<CompanyResponse>> findAll(Pageable pageable) {
+        return ResponseEntity.ok().body(service.findAll(pageable));
     }
 
     @Override

@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -166,16 +168,17 @@ class CompanyServiceTest {
     }
 
     @Test
-    public void listCompanies_ReturnsAllCompanies() {
-        List<ClientCompany> list = List.of(COMPANY_ENTITY);
-        when(repository.findAll()).thenReturn(list);
+    public void listCompanies_ReturnsPagedCompanies() {
+        var pageable = PageRequest.of(0, 10);
+        when(repository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(COMPANY_ENTITY), pageable, 1));
         when(mapper.toResponse(COMPANY_ENTITY)).thenReturn(COMPANY_RESPONSE);
 
-        var companiesList = service.findAll();
+        var companiesPage = service.findAll(pageable);
 
-        assertThat(companiesList).isNotNull();
-        assertThat(companiesList.size()).isEqualTo(1);
-        verify(repository).findAll();
+        assertThat(companiesPage).isNotNull();
+        assertThat(companiesPage.getContent()).containsExactly(COMPANY_RESPONSE);
+        assertThat(companiesPage.getTotalElements()).isEqualTo(1);
+        verify(repository).findAll(pageable);
         verify(mapper).toResponse(COMPANY_ENTITY);
     }
 
