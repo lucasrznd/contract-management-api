@@ -138,6 +138,26 @@ class ContractServiceTest {
     }
 
     @Test
+    public void findContractById_WithExistingId_ReturnsContract() {
+        when(repository.findById(1L)).thenReturn(Optional.of(CONTRACT_ENTITY));
+        when(mapper.toResponse(CONTRACT_ENTITY)).thenReturn(CONTRACT_RESPONSE);
+
+        var foundContract = service.findById(1L);
+
+        assertThat(foundContract).isEqualTo(CONTRACT_RESPONSE);
+        verify(repository).findById(1L);
+        verify(mapper).toResponse(CONTRACT_ENTITY);
+    }
+
+    @Test
+    public void findContractById_WithUnexistingId_ThrowsException() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.findById(1L)).isInstanceOf(ResourceNotFoundException.class);
+        verify(mapper, times(0)).toResponse(any());
+    }
+
+    @Test
     public void updateContract_WithExistingId_ReturnsUpdatedContract() {
         when(repository.findById(1L)).thenReturn(Optional.of(CONTRACT_ENTITY));
         when(mapper.update(UPDATE_CONTRACT_REQUEST, CONTRACT_ENTITY)).thenReturn(UPDATED_ENTITY);

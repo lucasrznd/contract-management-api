@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 @Tag(name = "SellerController", description = "Controller responsible for sellers operations")
 @RequestMapping("/sellers")
@@ -32,11 +33,13 @@ public interface SellerController {
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = SellerResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "413", description = "Image too large", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
     })
-    @PostMapping
-    ResponseEntity<SellerResponse> save(@RequestBody @Valid final SellerRequest request);
+    @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<SellerResponse> save(@ModelAttribute @Valid final SellerRequest request);
 
     @Operation(summary = "Find all sellers (paginated)")
     @ApiResponses(value = {
@@ -50,9 +53,9 @@ public interface SellerController {
                                                  @RequestParam(name = "text", required = false) String text,
                                                  @ParameterObject @PageableDefault(sort = "id") Pageable pageable);
 
-    @Operation(summary = "Update seller")
+    @Operation(summary = "Find seller by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Seller updated", content = @Content(
+            @ApiResponse(responseCode = "200", description = "Seller founded", content = @Content(
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = SellerResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
@@ -61,10 +64,27 @@ public interface SellerController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
     })
-    @PutMapping("/{id}")
+    @GetMapping("/{id}")
+    ResponseEntity<SellerResponse> findById(@Parameter(description = "Seller id", required = true, example = "1")
+                                            @PathVariable(name = "id") Long id);
+
+    @Operation(summary = "Update seller")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Seller updated", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = SellerResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404", description = "Seller not found", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "413", description = "Image too large", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
+    })
+    @PutMapping(value = "/{id}", consumes = MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<SellerResponse> update(@Parameter(description = "Seller id", required = true, example = "1")
                                           @PathVariable(name = "id") Long id,
-                                          @RequestBody @Valid UpdateSellerRequest request);
+                                          @ModelAttribute @Valid UpdateSellerRequest request);
 
     @Operation(summary = "Delete seller")
     @ApiResponses(value = {

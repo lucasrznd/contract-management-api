@@ -1,8 +1,10 @@
 package br.com.lucasrznd.contractmanagementapi.dtos.request;
 
+import br.com.lucasrznd.contractmanagementapi.validation.ImageFile;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 import lombok.With;
 
 @With
@@ -17,6 +19,7 @@ public record SellerRequest(
         @Size(min = 10, max = 11, message = "Phone Number must contain between 10 and 11 characters")
         String phoneNumber,
 
-        @Schema(description = "Url Image of the seller")
-        String urlImage) {
+        @Schema(description = "Image of the seller (JPEG, PNG or WebP)", type = "string", format = "binary")
+        @ImageFile
+        MultipartFile image) {
 }

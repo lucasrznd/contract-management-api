@@ -148,6 +148,10 @@ public class ContractService {
         return docResponse;
     }
 
+    public ContractResponse findById(final Long id) {
+        return mapper.toResponse(find(id));
+    }
+
     public ContractResponse update(final Long id, final UpdateContractRequest request) {
         Contract entity = find(id);
         Contract updatedContract = mapper.update(request, entity);

@@ -11,12 +11,12 @@ import java.text.NumberFormat;
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
-        uses = {CompanyMapper.class, SellerMapper.class})
+        uses = {CompanyMapper.class, SellerMapper.class, StorageUrlMapper.class})
 public interface ContractMapper {
 
     @Mapping(target = "companyTradeName", source = "clientCompany.tradeName")
     @Mapping(target = "sellerName", source = "seller.name")
-    @Mapping(target = "sellerImageUrl", source = "seller.urlImage")
+    @Mapping(target = "sellerImageUrl", source = "seller.imageKey", qualifiedByName = "toImageUrl")
     @Mapping(target = "monthlyPriceFmt", expression = "java(setMonthlyPriceFmt(contract))")
     ContractResponse toResponse(final Contract contract);
 

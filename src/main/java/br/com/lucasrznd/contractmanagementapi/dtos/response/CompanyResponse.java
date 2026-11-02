@@ -13,5 +13,6 @@ public record CompanyResponse(Long id,
                               Integer number,
                               String city,
                               String state,
-                              String zipCode) {
+                              String zipCode,
+                              String urlImage) {
 }

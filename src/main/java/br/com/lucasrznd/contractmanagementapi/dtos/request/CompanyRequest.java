@@ -1,11 +1,13 @@
 package br.com.lucasrznd.contractmanagementapi.dtos.request;
 
+import br.com.lucasrznd.contractmanagementapi.validation.ImageFile;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.With;
+import org.springframework.web.multipart.MultipartFile;
 
 @With
 public record CompanyRequest(
@@ -69,5 +71,9 @@ public record CompanyRequest(
         @Schema(description = "Zip code", example = "01153000")
         @NotBlank(message = "Zip code cannot be empty")
         @Size(min = 8, max = 9, message = "Zip code must contain between 8 and 9 characters")
-        String zipCode) {
+        String zipCode,
+
+        @Schema(description = "Image of the company (JPEG, PNG or WebP)", type = "string", format = "binary")
+        @ImageFile
+        MultipartFile image) {
 }

@@ -156,6 +156,21 @@ public interface ContractController {
     ResponseEntity<DocResponse> getDocByToken(@Parameter(description = "Doc Token", required = true)
                                               @RequestParam(name = "token") String token);
 
+    @Operation(summary = "Find contract by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contract founded", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ContractResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404", description = "Contract not found", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping("/{id}")
+    ResponseEntity<ContractResponse> findById(@Parameter(description = "Contract id", required = true, example = "1")
+                                              @PathVariable(name = "id") Long id);
+
     @Operation(summary = "Update contract")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Contract updated", content = @Content(

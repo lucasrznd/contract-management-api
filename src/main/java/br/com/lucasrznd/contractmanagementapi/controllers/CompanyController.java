@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @Tag(name = "CompanyController", description = "Controller responsible for companies operations")
@@ -33,12 +34,14 @@ public interface CompanyController {
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = CompanyResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "413", description = "Image too large", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)
             ))
     })
-    @PostMapping
-    ResponseEntity<CompanyResponse> save(@RequestBody @Valid final CompanyRequest request);
+    @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<CompanyResponse> save(@ModelAttribute @Valid final CompanyRequest request);
 
     @Operation(summary = "Find all companies (paginated)")
     @ApiResponses(value = {
@@ -62,6 +65,21 @@ public interface CompanyController {
     @GetMapping("/count")
     ResponseEntity<Integer> countCompanies();
 
+    @Operation(summary = "Find company by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Company founded", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = CompanyResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404", description = "Company not found", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping("/{id}")
+    ResponseEntity<CompanyResponse> findById(@Parameter(description = "Company id", required = true, example = "1")
+                                             @PathVariable(name = "id") Long id);
+
     @Operation(summary = "Update company")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Company updated", content = @Content(
@@ -71,14 +89,16 @@ public interface CompanyController {
             @ApiResponse(responseCode = "404", description = "Company not found", content = @Content(
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)
             )),
+            @ApiResponse(responseCode = "413", description = "Image too large", content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(
                     mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = StandardError.class)
             ))
     })
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<CompanyResponse> update(@Parameter(description = "Company id", required = true, example = "1")
                                            @PathVariable(name = "id") Long id,
-                                           @RequestBody @Valid UpdateCompanyRequest request);
+                                           @ModelAttribute @Valid UpdateCompanyRequest request);
 
     @Operation(summary = "Delete company")
     @ApiResponses(value = {
